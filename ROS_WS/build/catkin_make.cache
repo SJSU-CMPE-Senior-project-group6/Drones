@@ -1,0 +1,2 @@
+drone_project
+-DCATKIN_DEVEL_PREFIX=/home/pi/ROS_WS/devel -DCMAKE_INSTALL_PREFIX=/home/pi/ROS_WS/install -G Unix Makefiles
