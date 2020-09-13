@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <!--arguement-->
+    
+    <!--Subscriber Node-->
+    <node pkg="drone_project" name="RC_in_reading" output="screen" type="read_rc_in.py">
+    </node>
+
+</launch>
