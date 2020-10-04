@@ -1,5 +1,3 @@
-import sys, select, termios, tty
-
 msg = """
 Reading from the keyboard  and Publishing to Twist!
 ---------------------------
@@ -12,8 +10,8 @@ Arrow key:
        up
 left  down  right
 
-Takeoff: t
-Land:    l
+Takeoff: q
+Land:    e
 CTRL-C to quit
 """
 
@@ -22,6 +20,8 @@ moveBindings = {
         's':"Throttle down",
         'a':"Yawl left",
         'd':"Yawl right",
+        'q':"Takeoff",
+        'e':"Land",
         '\x1b[A':"Pitch up",
         '\x1b[B':"Pitch down",
         '\x1b[D':"Roll Left",
@@ -32,7 +32,7 @@ if __name__=="__main__":
     try:
         print(msg)
         while(1):
-            key = input("Enter your command")
+            key = raw_input("Enter your command\n")
             if key in moveBindings.keys():
                 print(moveBindings[key])
             else:
