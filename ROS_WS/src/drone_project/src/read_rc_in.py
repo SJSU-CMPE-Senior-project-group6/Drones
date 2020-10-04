@@ -13,7 +13,7 @@ def listener():
 
 def read_input(msg):
     print("read input")
-    print(msg.channels)
+    print(msg.rssi," ",msg.channels)
   
 
 if __name__ == "__main__":
