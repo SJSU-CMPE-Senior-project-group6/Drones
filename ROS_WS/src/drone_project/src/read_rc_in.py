@@ -2,7 +2,6 @@
 
 import rospy
 from mavros_msgs.msg import RCIn 
-from geometry_msgs.msg import Twist
 
 def listener():
     rospy.Subscriber("/mavros/rc/in",RCIn,read_input)
