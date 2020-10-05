@@ -96,8 +96,18 @@ if __name__=="__main__":
                     channel = default_channel #restore back default state
             
             elif key is 'z': #reset channel
-                print("Reset channel:",default_channel)
-                channel = default_channel
+                print("Reset channel:")
+                # [1500,1500,1030,1500,1200,1000,1500,1500]
+                channel[0] = 1500
+                channel[1] = 1500
+                channel[2] = 1030
+                channel[3] = 1500
+
+                channel[4] = 1200
+                channel[5] = 1000
+                channel[6] = 1500
+                channel[7] = 1500
+
                 
             else:
                 print("Not a command\n")
