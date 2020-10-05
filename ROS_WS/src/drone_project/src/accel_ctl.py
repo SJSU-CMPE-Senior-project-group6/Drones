@@ -23,14 +23,14 @@ CTRL-C to quit
 inc_rate = 1.03
 dec_rate = 2 - inc_rate
 moveBindings = {
-        'w':(1,1,inc_rate,1,1,1), #"Throttle up"
-        's':(1,1,dec_rate,1,1,1), #"Throttle down"
-        'a':(1,1,1,dec_rate,1,1), #"Yawl left"
-        'd':(1,1,1,inc_rate,1,1), #"Yawl right"
-        '\x1b[A':(1,dec_rate,1,1,1,1), #"Pitch up"
-        '\x1b[B':(1,inc_rate,1,1,1,1), #"Pitch down"
-        '\x1b[D':(dec_rate,1,1,1,1,1), #"Roll Left"
-        '\x1b[C':(inc_rate,1,1,1,1,1), #"Roll right"
+        'w':(1,1,inc_rate,1), #"Throttle up"
+        's':(1,1,dec_rate,1), #"Throttle down"
+        'a':(1,1,1,dec_rate), #"Yawl left"
+        'd':(1,1,1,inc_rate), #"Yawl right"
+        '\x1b[A':(1,dec_rate,1,1), #"Pitch up"
+        '\x1b[B':(1,inc_rate,1,1), #"Pitch down"
+        '\x1b[D':(dec_rate,1,1,1), #"Roll Left"
+        '\x1b[C':(inc_rate,1,1,1), #"Roll right"
 } 
 """
 channel:    Min    Max    Default
@@ -75,17 +75,15 @@ if __name__=="__main__":
         while(1):
             key = raw_input("Enter your command\n")
             if key in moveBindings.keys():
-                channel[0] *= moveBindings[key][0]
-                channel[1] *= moveBindings[key][1]
-                channel[2] *= moveBindings[key][2]
-                
-                channel[3] *= moveBindings[key][3]
-                channel[4] *= moveBindings[key][4]
-                channel[5] *= moveBindings[key][5]
+                channel[0] = round(channel[0]*moveBindings[key][0],0)
+                channel[1] = round(channel[1]*moveBindings[key][1],0)
+                channel[2] = round(channel[2]*moveBindings[key][2],0)
+                channel[3] = round(channel[3]*moveBindings[key][3],0)
                 
             elif key is 'q' or key is 'e': #take off or land
                 if key is 'q': #take off
                     channel[:4] = Take_off
+                    print("Takeoff: ",channel)
                     RC_data.channels = channel
                     pub.publish(RC_data)
                     time.sleep(3) #need at least 3 second
@@ -93,6 +91,7 @@ if __name__=="__main__":
 
                 else: #land
                     channel[:4] = Land
+                    print("Land: ",channel)
                     RC_data.channels = channel
                     pub.publish(RC_data)
                     time.sleep(3) #need at least 3 second
