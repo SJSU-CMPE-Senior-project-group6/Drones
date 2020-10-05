@@ -96,6 +96,10 @@ if __name__=="__main__":
                     pub.publish(RC_data)
                     time.sleep(3) #need at least 3 second
                     channel = channel_defalut #restore back default state
+            
+            elif key is 'z': #reset channel
+                channel = channel_defalut
+                
             else:
                 print("Not a command\n")
                 if (key == '\x03'):
