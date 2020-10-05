@@ -65,7 +65,7 @@ Land = [1500,1500,1030,1000]
 
 if __name__=="__main__":  
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 1)
-    print("Set Publisher\n")
+    print("Set Publisher")
     rospy.init_node('Override_RCIn_by_keyboard')
     RC_data = OverrideRCIn()
     RC_data.channels = channel #set default
@@ -75,10 +75,10 @@ if __name__=="__main__":
         while(1):
             key = raw_input("Enter your command\n")
             if key in moveBindings.keys():
-                channel[0] = round(channel[0]*moveBindings[key][0],0)
-                channel[1] = round(channel[1]*moveBindings[key][1],0)
-                channel[2] = round(channel[2]*moveBindings[key][2],0)
-                channel[3] = round(channel[3]*moveBindings[key][3],0)
+                channel[0] = int(channel[0]*moveBindings[key][0])
+                channel[1] = int(channel[1]*moveBindings[key][1])
+                channel[2] = int(channel[2]*moveBindings[key][2])
+                channel[3] = int(channel[3]*moveBindings[key][3])
                 
             elif key is 'q' or key is 'e': #take off or land
                 if key is 'q': #take off
