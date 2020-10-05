@@ -45,23 +45,23 @@ channel:    Min    Max    Default
 mode#1: 1200  1000
 mode#2: 1300  1500
 mode#3: 1400  2000
-        Throttle    Yawl    Pitch   Roll
-Takeoff:  1023      1999    1990    1000
-Land:     1021      1000    1990    1995
+          Roll     Pitch   Throttle Yawl
+Takeoff:  1023     1999    1990     1000
+Land:     1021     1000    1990     1995
 hold for more than 3s to send above command            
 """
-#Mode
+#Mode channel[4:5]
 Stable = [1200,1000]
 AltHold= [1300,1500]
 Loiter = [1400,2000]
 
-#Channel defalut
+#Channel defalut channel[0:3]
 channel = [1500,1500,1030,1500,1200,1000]
 channel_defalut = [1500,1500,1030,1500,1200,1000]
 
-#essential command
-Take_off = [1023,1999,1990,1000]
-Land = [1021,1000,1990,1995]
+#essential command channel[0:3]
+Take_off = [1500,1500,1030,1997]
+Land = [1500,1500,1030,1000]
 
 if __name__=="__main__":  
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 1)
@@ -101,6 +101,7 @@ if __name__=="__main__":
                 print("Not a command\n")
                 if (key == '\x03'):
                     break
+            print(channel)
             RC_data.channels = channel
             pub.publish(RC_data)
 
