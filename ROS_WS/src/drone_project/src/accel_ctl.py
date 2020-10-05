@@ -1,7 +1,5 @@
 import rospy
 import time
-# from geometry_msgs.msg import Vector3,Vector3Stamped
-# from std_msgs.msg import Header
 from mavros_msgs.msg import OverrideRCIn
 msg = """
 Reading from the keyboard  and Publishing to Twist!
