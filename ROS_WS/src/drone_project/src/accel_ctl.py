@@ -56,8 +56,8 @@ AltHold= [1300,1500]
 Loiter = [1400,2000]
 
 #Channel defalut channel[0:3]
-channel = [1500,1500,1030,1500,1200,1000]
-channel_defalut = [1500,1500,1030,1500,1200,1000]
+channel = [1500,1500,1030,1500,1200,1000,1500,1500]
+channel_defalut = [1500,1500,1030,1500,1200,1000,1500,1500]
 
 #essential command channel[0:3]
 Take_off = [1500,1500,1030,1997]
@@ -66,7 +66,7 @@ Land = [1500,1500,1030,1000]
 if __name__=="__main__":  
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 1)
     print("Set Publisher\n")
-    rospy.init_node('Override_RCIn by keyboard')
+    rospy.init_node('Override_RCIn_by_keyboard')
     RC_data = OverrideRCIn()
     RC_data.channels = channel #set default
     pub.publish(RC_data)
