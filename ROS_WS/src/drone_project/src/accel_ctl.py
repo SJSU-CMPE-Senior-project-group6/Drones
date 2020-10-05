@@ -29,7 +29,8 @@ moveBindings = {
         '\x1b[B':(1,inc_rate,1,1), #"Pitch down"
         '\x1b[D':(dec_rate,1,1,1), #"Roll Left"
         '\x1b[C':(inc_rate,1,1,1), #"Roll right"
-} 
+}
+
 """
 channel:    Min    Max    Default
 #1:Roll     1000 - 2001   1500
@@ -48,18 +49,71 @@ Takeoff:  1023     1999    1990     1000
 Land:     1021     1000    1990     1995
 hold for more than 3s to send above command            
 """
+
+#Min, Max, Default
+Roll =      [1000,2001,1500]
+Pitch =     [1000,2001,1500]
+Throttle =  [1019,2001,1030]
+Yawl =      [1000,2001,1550]
+
 #Mode channel[4:5]
-Stable = [1200,1000]
-AltHold= [1300,1500]
-Loiter = [1400,2000]
+Mode1 = [1200,1000] #Stable
+Mode2 = [1300,1500] #AltHold
+Mode3 = [1400,2000] #Land
 
 #Channel defalut channel[0:3]
-channel = [1500,1500,1030,1500,1200,1000,1500,1500]
-default_channel = [1500,1500,1030,1500,1200,1000,1500,1500]
+channel = [1500,1500,1030,1500,1200,1000,1500,1500] #defalut mode is mode#1: Stabilize
 
 #essential command channel[0:3]
 Take_off = [1500,1500,1030,1997]
 Land = [1500,1500,1030,1000]
+
+def set_default_channel():
+    # default_channel = [1500,1500,1030,1500,1200,1000,1500,1500]
+    print("Reset channel:")
+    channel[0] = Roll[2]
+    channel[1] = Pitch[2]
+    channel[2] = Throttle[2]
+    channel[3] = Yawl[2]
+
+    channel[4] = Mode1[0]
+    channel[5] = Mode1[1]
+    channel[6] = 1500
+    channel[7] = 1500
+
+def check_channel_boundary():
+    #channel 0 Roll
+    if channel[0] <= Roll[0]:
+        channel[0] = Roll[0]
+    elif channel[0] >= Roll[1]:
+        channel[0] = Roll[1]
+    
+    #channel 1 Pitch
+    elif channel[1] <= Pitch[0]:
+        channel[1] = Pitch[0]
+    elif channel[1] >= Pitch[1]:
+        channel[1] = Pitch[1]
+
+    #channel 2 Throttle
+    elif channel[2] <= Throttle[0]:
+        channel[2] = Throttle[0]
+    elif channel[2] >= Throttle[1]:
+        channel[2] = Throttle[1]
+
+    #channel 3 Yawl
+    elif channel[3] <= Yawl[0]:
+        channel[3] = Yawl[0]
+    elif channel[3] >= Yawl[1]:
+        channel[3] = Yawl[1]
+    
+    else:
+        land_command()
+        
+def land_command():
+    channel[:4] = Land
+
+def takeoff_command():
+    channel[:4] = Take_off
 
 if __name__=="__main__":  
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 1)
@@ -77,38 +131,28 @@ if __name__=="__main__":
                 channel[1] = int(channel[1]*moveBindings[key][1])
                 channel[2] = int(channel[2]*moveBindings[key][2])
                 channel[3] = int(channel[3]*moveBindings[key][3])
-                
+                check_channel_boundary() #check range of the channel not be exceed
+
             elif key is 'q' or key is 'e': #take off or land
                 if key is 'q': #take off
-                    channel[:4] = Take_off
+                    takeoff_command()
                     print("Takeoff: ",channel)
                     RC_data.channels = channel
                     pub.publish(RC_data)
                     time.sleep(3) #need at least 3 second
-                    channel = default_channel #restore back default state
+                    set_default_channel() #restore back default state
 
                 else: #land
-                    channel[:4] = Land
+                    land_command()
                     print("Land: ",channel)
                     RC_data.channels = channel
                     pub.publish(RC_data)
                     time.sleep(3) #need at least 3 second
-                    channel = default_channel #restore back default state
+                    set_default_channel() #restore back default state
             
             elif key is 'z': #reset channel
-                print("Reset channel:")
-                # [1500,1500,1030,1500,1200,1000,1500,1500]
-                channel[0] = 1500
-                channel[1] = 1500
-                channel[2] = 1030
-                channel[3] = 1500
+                set_default_channel()
 
-                channel[4] = 1200
-                channel[5] = 1000
-                channel[6] = 1500
-                channel[7] = 1500
-
-                
             else:
                 print("Not a command\n")
                 if (key == '\x03'):
@@ -121,6 +165,7 @@ if __name__=="__main__":
         print(e)
 
     finally:
-        RC_data.channels = channel_defalut
+        set_default_channel()
+        RC_data.channels = channel
         pub.publish(RC_data)
         print("End Command\n")
