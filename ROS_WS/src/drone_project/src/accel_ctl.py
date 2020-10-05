@@ -54,7 +54,7 @@ hold for more than 3s to send above command
 Roll =      [1000,2001,1500]
 Pitch =     [1000,2001,1500]
 Throttle =  [1019,2001,1030]
-Yawl =      [1000,2001,1550]
+Yawl =      [1000,2001,1500]
 
 #Mode channel[4:5]
 Mode1 = [1200,1000] #Stable
@@ -127,6 +127,7 @@ if __name__=="__main__":
         while(1):
             key = raw_input("Enter your command\n")
             if key in moveBindings.keys():
+		print(moveBindings[key])
                 channel[0] = int(channel[0]*moveBindings[key][0])
                 channel[1] = int(channel[1]*moveBindings[key][1])
                 channel[2] = int(channel[2]*moveBindings[key][2])
