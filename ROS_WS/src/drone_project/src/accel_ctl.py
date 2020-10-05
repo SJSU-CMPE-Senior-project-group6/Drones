@@ -57,7 +57,7 @@ Loiter = [1400,2000]
 
 #Channel defalut channel[0:3]
 channel = [1500,1500,1030,1500,1200,1000,1500,1500]
-channel_defalut = [1500,1500,1030,1500,1200,1000,1500,1500]
+default_channel = [1500,1500,1030,1500,1200,1000,1500,1500]
 
 #essential command channel[0:3]
 Take_off = [1500,1500,1030,1997]
@@ -87,7 +87,7 @@ if __name__=="__main__":
                     RC_data.channels = channel
                     pub.publish(RC_data)
                     time.sleep(3) #need at least 3 second
-                    channel = channel_defalut #restore back default state
+                    channel = default_channel #restore back default state
 
                 else: #land
                     channel[:4] = Land
@@ -95,11 +95,11 @@ if __name__=="__main__":
                     RC_data.channels = channel
                     pub.publish(RC_data)
                     time.sleep(3) #need at least 3 second
-                    channel = channel_defalut #restore back default state
+                    channel = default_channel #restore back default state
             
             elif key is 'z': #reset channel
-                print("Reset channel:",channel_defalut)
-                channel = channel_defalut
+                print("Reset channel:",default_channel)
+                channel = default_channel
                 
             else:
                 print("Not a command\n")
