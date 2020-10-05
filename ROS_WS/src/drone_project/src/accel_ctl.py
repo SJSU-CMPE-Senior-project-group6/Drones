@@ -98,7 +98,7 @@ if __name__=="__main__":
                     channel = channel_defalut #restore back default state
             
             elif key is 'z': #reset channel
-                print("Reset channel")
+                print("Reset channel:",channel_defalut)
                 channel = channel_defalut
                 
             else:
