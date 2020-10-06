@@ -114,15 +114,28 @@ def land_command():
 def takeoff_command():
     channel[:4] = Take_off
 
+altitude_data = 0
+def setup_thread():
+    altitude_thread = threading.Thread(target=callback_altitude)
+    altitude_thread.daemon = False
+    altitude_thread.start()
+
+def callback_altitude():
+    rospy.Subscriber("/mavros/global_position/rel_alt",Float64,callback)
+    rospy.spin()
+
+def callback(msgs):
+    altitude_data = msgs.data
+    print("Altitude: ",altitude_data)
+
 if __name__=="__main__":  
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
-    altitude_data = rospy.Subscriber("/mavros/global_position/rel_alt",Float64)
     print("Started RC Override Ctl")
     rospy.init_node('Override_RCIn_by_keyboard')
     RC_data = OverrideRCIn()
     RC_data.channels = channel #set default
     pub.publish(RC_data)
-  
+    setup_thread()
     try:
         print(msg)
         while(1):
