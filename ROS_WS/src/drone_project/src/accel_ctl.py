@@ -18,7 +18,7 @@ Land:    e
 CTRL-C to quit
 """
 
-inc_rate = 20
+inc_rate = 50
 dec_rate = -1*inc_rate
 moveBindings = {
         'w':(0,0,inc_rate,0), #"Throttle up"
