@@ -82,32 +82,29 @@ def set_default_channel():
     channel[7] = 1500
 
 def check_channel_boundary():
-    #channel 0 Roll
+    #channel 0 Roll [1000,2001,1500]
     if channel[0] <= Roll[0]:
         channel[0] = Roll[0]
     elif channel[0] >= Roll[1]:
         channel[0] = Roll[1]
     
-    #channel 1 Pitch
-    elif channel[1] <= Pitch[0]:
+    #channel 1 Pitch [1000,2001,1500]
+    if channel[1] <= Pitch[0]:
         channel[1] = Pitch[0]
     elif channel[1] >= Pitch[1]:
         channel[1] = Pitch[1]
 
-    #channel 2 Throttle
-    elif channel[2] <= Throttle[0]:
+    #channel 2 Throttle [1019,2001,1030]
+    if channel[2] <= Throttle[0]:
         channel[2] = Throttle[0]
     elif channel[2] >= Throttle[1]:
         channel[2] = Throttle[1]
 
-    #channel 3 Yawl
-    elif channel[3] <= Yawl[0]:
+    #channel 3 Yawl [1000,2001,1500]
+    if channel[3] <= Yawl[0]:
         channel[3] = Yawl[0]
     elif channel[3] >= Yawl[1]:
         channel[3] = Yawl[1]
-    
-    else:
-        land_command()
         
 def land_command():
     channel[:4] = Land
@@ -127,13 +124,11 @@ if __name__=="__main__":
         while(1):
             key = raw_input("Enter your command\n")
             if key in moveBindings.keys():
-	        print(moveBindings[key],"+",channel[:4])
-		print(type(channel[0]), type(moveBindings[key][0]))
                 channel[0] = channel[0] + moveBindings[key][0]
                 channel[1] = channel[1] + moveBindings[key][1]
                 channel[2] = channel[2] + moveBindings[key][2]
                 channel[3] = channel[3] + moveBindings[key][3]
-                # check_channel_boundary() #check range of the channel not be exceed
+                check_channel_boundary() #check range of the channel not be exceed
       
             elif key is 'q' or key is 'e': #take off or land
                 if key is 'q': #take off
