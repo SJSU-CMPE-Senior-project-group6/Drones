@@ -124,7 +124,7 @@ if __name__=="__main__":
     try:
         print(msg)
         while(1):
-            print("Altitude: ",altitude.data)
+            print("Altitude: ",altitude)
             key = raw_input("Enter your command\n")
             if key in moveBindings.keys():
                 channel[0] = channel[0] + moveBindings[key][0]
