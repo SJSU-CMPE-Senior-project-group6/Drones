@@ -18,17 +18,17 @@ Land:    e
 CTRL-C to quit
 """
 
-inc_rate = 1.03
-dec_rate = 2 - inc_rate
+inc_rate = 20
+dec_rate = -1*inc_rate
 moveBindings = {
-        'w':(1,1,inc_rate,1), #"Throttle up"
-        's':(1,1,dec_rate,1), #"Throttle down"
-        'a':(1,1,1,dec_rate), #"Yawl left"
-        'd':(1,1,1,inc_rate), #"Yawl right"
-        '\x1b[A':(1,dec_rate,1,1), #"Pitch up"
-        '\x1b[B':(1,inc_rate,1,1), #"Pitch down"
-        '\x1b[D':(dec_rate,1,1,1), #"Roll Left"
-        '\x1b[C':(inc_rate,1,1,1), #"Roll right"
+        'w':(0,0,inc_rate,0), #"Throttle up"
+        's':(0,0,dec_rate,0), #"Throttle down"
+        'a':(0,0,0,dec_rate), #"Yawl left"
+        'd':(0,0,0,inc_rate), #"Yawl right"
+        '\x1b[A':(0,dec_rate,0,0), #"Pitch up"
+        '\x1b[B':(0,inc_rate,0,0), #"Pitch down"
+        '\x1b[D':(dec_rate,0,0,0), #"Roll Left"
+        '\x1b[C':(inc_rate,0,0,0), #"Roll right"
 }
 
 """
@@ -127,39 +127,14 @@ if __name__=="__main__":
         while(1):
             key = raw_input("Enter your command\n")
             if key in moveBindings.keys():
-		        print(moveBindings[key])
-                channel[0] = int(channel[0]*moveBindings[key][0])
-                channel[1] = int(channel[1]*moveBindings[key][1])
-                channel[2] = int(channel[2]*moveBindings[key][2])
-                channel[3] = int(channel[3]*moveBindings[key][3])
+	        print(moveBindings[key],"+",channel[:4])
+		print(type(channel[0]), type(moveBindings[key][0]))
+                channel[0] = channel[0] + moveBindings[key][0]
+                channel[1] = channel[1] + moveBindings[key][1]
+                channel[2] = channel[2] + moveBindings[key][2]
+                channel[3] = channel[3] + moveBindings[key][3]
                 # check_channel_boundary() #check range of the channel not be exceed
-                    #channel 0 Roll
-                if channel[0] <= Roll[0]:
-                    channel[0] = Roll[0]
-                elif channel[0] >= Roll[1]:
-                    channel[0] = Roll[1]
-                
-                #channel 1 Pitch
-                elif channel[1] <= Pitch[0]:
-                    channel[1] = Pitch[0]
-                elif channel[1] >= Pitch[1]:
-                    channel[1] = Pitch[1]
-
-                #channel 2 Throttle
-                elif channel[2] <= Throttle[0]:
-                    channel[2] = Throttle[0]
-                elif channel[2] >= Throttle[1]:
-                    channel[2] = Throttle[1]
-
-                #channel 3 Yawl
-                elif channel[3] <= Yawl[0]:
-                    channel[3] = Yawl[0]
-                elif channel[3] >= Yawl[1]:
-                    channel[3] = Yawl[1]
-                
-                else:
-                    land_command()
-
+      
             elif key is 'q' or key is 'e': #take off or land
                 if key is 'q': #take off
                     takeoff_command()
@@ -177,7 +152,7 @@ if __name__=="__main__":
                     time.sleep(3) #need at least 3 second
                     set_default_channel() #restore back default state
             
-            elif key is 'z': #reset channel
+            if key is 'z': #reset channel
                 set_default_channel()
 
             else:
