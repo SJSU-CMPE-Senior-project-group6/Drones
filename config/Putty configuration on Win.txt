@@ -1,0 +1,14 @@
+addr:
+192.168.2.49
+account: 
+pi
+
+pw:
+raspberry
+
+useful command:
+sudo emlidtool ardupilot          // set up env
+sudo systemctl status arducopter  // check status
+sudo nano /etc/default/arducopter // edit the file
+sudo systemctl daemon-reload 	  // reload the change
+sudo systemctl restart arducopter // restart the copter
