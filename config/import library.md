@@ -4,7 +4,7 @@ __firefox add-on__
 >[follow](https://github.com/KeithLRobertson/markdown-viewer#support-for-local-files-on-linux)
 
 # ros
-
+[__install__](http://wiki.ros.org/kinetic/Installation/Ubuntu)
 
 
 # python
