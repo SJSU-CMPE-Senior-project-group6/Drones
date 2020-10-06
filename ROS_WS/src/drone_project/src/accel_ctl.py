@@ -1,7 +1,8 @@
 import rospy
 import time
 from mavros_msgs.msg import OverrideRCIn
-from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Float64
+import threading
 msg = """
 Reading from the keyboard  and Publishing to Twist!
 ---------------------------
@@ -115,16 +116,16 @@ def takeoff_command():
 
 if __name__=="__main__":  
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
-    altitude = rospy.Subscriber("/mavros/global_position/rel_alt",PoseStamped)
+    altitude_data = rospy.Subscriber("/mavros/global_position/rel_alt",Float64)
     print("Started RC Override Ctl")
     rospy.init_node('Override_RCIn_by_keyboard')
     RC_data = OverrideRCIn()
     RC_data.channels = channel #set default
     pub.publish(RC_data)
+  
     try:
         print(msg)
         while(1):
-            print("Altitude: ",altitude.Float64)
             key = raw_input("Enter your command\n")
             if key in moveBindings.keys():
                 channel[0] = channel[0] + moveBindings[key][0]
@@ -139,7 +140,7 @@ if __name__=="__main__":
                     print("Takeoff: ",channel)
                     RC_data.channels = channel
                     pub.publish(RC_data)
-                    time.sleep(3) #need at least 3 second
+                    time.sleep(2) #need at least 3 second
                     set_default_channel() #restore back default state
 
                 else: #land
@@ -147,7 +148,7 @@ if __name__=="__main__":
                     print("Land: ",channel)
                     RC_data.channels = channel
                     pub.publish(RC_data)
-                    time.sleep(3) #need at least 3 second
+                    time.sleep(2) #need at least 3 second
                     set_default_channel() #restore back default state
             
             if key is 'z': #reset channel
