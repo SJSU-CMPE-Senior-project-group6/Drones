@@ -1,7 +1,7 @@
 import rospy
 import time
 from mavros_msgs.msg import OverrideRCIn
-from std_msgs.msg import Float64
+from geometry_msgs.msg import PoseStamped
 msg = """
 Reading from the keyboard  and Publishing to Twist!
 ---------------------------
@@ -115,7 +115,7 @@ def takeoff_command():
 
 if __name__=="__main__":  
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
-    altitude = rospy.Subscriber("/mavros/global_position/rel_alt",Float64)
+    altitude = rospy.Subscriber("/mavros/global_position/rel_alt",PoseStamped)
     print("Started RC Override Ctl")
     rospy.init_node('Override_RCIn_by_keyboard')
     RC_data = OverrideRCIn()
