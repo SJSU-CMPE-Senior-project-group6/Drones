@@ -9,7 +9,7 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_fronta
 img = cv2.imread("2.png")
 
 # Read image as gray scale image
-gray_img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # gray_img = cv2.imread("2.png", 0)
 
 # Search the co-ordintes of the image

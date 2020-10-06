@@ -1,0 +1,5 @@
+ros
+
+terminal in workspace:
+
+source devel/setup.bash
