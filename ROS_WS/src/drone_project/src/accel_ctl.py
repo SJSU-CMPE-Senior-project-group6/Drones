@@ -114,7 +114,7 @@ def takeoff_command():
 
 if __name__=="__main__":  
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 1)
-    print("Set Publisher")
+    print("Started RC Override Ctl")
     rospy.init_node('Override_RCIn_by_keyboard')
     RC_data = OverrideRCIn()
     RC_data.channels = channel #set default
