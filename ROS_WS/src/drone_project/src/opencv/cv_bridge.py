@@ -1,12 +1,6 @@
 #! /usr/bin/env python2
 # -*- coding: UTF-8 -*-
 
-from cv_bridge import CvBridge
-bridge = CvBridge()
-cv_image = bridge.imgmsg_to_cv2(image_message, desired_encoding='passthrough')
-
-#------------------------------------------------------------
-
 import roslib
 roslib.load_manifest('my_package')
 import sys
@@ -27,10 +21,3 @@ class image_converter:
 			self.image_pub.publish(cv_image)
 		except CvBridgeError as e:
 			print(e)
-
-def main(args):
-	ic = image_converter()
-	rospy.spin()
-
-if __name__ == '__main__':
-	main(sys.argv)
