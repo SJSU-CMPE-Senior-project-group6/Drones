@@ -1,9 +1,0 @@
-Background of Receiver's protocal:
-https://oscarliang.com/pwm-ppm-sbus-dsm2-dsmx-sumd-difference/
-
-Ardupilot:
-http://ardupilot.org/ardupilot/index.html
-
-
-航飞遥控器官网：
-https://www.flysky-cn.com/
