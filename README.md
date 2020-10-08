@@ -1,14 +1,14 @@
 # Drones
 
-## branch
-__remote__  
+## Branch
+### Remote
 master branch on PC with ubuntu 16  
 
-__Raspberry Pi__  
+### Raspberry Pi
 Navio2 branch on Raspberry Pi  
 
-## folder
-### remote
+## Folder
+### Remote
 >__3D print__  
 >__config__  
 >__develop__  
