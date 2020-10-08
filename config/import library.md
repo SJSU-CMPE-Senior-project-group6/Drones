@@ -14,5 +14,5 @@ __cv2__
 
 
 #Raspberry Pi
-compressed_image_transport:
+>`compressed_image_transport:`
 https://github.com/ros-perception/image_transport_plugins.git
