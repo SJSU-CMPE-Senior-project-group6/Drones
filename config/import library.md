@@ -15,4 +15,6 @@ __cv2__
 
 # Raspberry Pi + camera + opencv
 >`sudo apt-get install -y python-cv-bridge`
+>`sudo apt-get install libraspberrypi-dev`
+>`sudo pip install picamera`
 
