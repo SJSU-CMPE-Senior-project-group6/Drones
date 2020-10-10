@@ -22,7 +22,6 @@ class image_analysis:
 		for x,y,w,h in faces:
 			info += ( (x+w/2)/gray.shape[1], (y+h/2)/gray.shape[0], (w*h)/gray.size )
 		self.image_pub.publish(info)
-		print(type(info))
-
+	
 if __name__=="__main__":
 	image_processor = image_analysis()
