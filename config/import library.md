@@ -11,5 +11,8 @@ __firefox add-on__
 __cv2__  
 >`pip2 install opencv-python==4.2.0.32`  
 
-# Raspberry Pi
-[compressed_image_transport](https://github.com/ros-perception/image_transport_plugins.git)
+# Raspberry Pi + Navio
+
+# Raspberry Pi + camera + opencv
+>`sudo apt-get install -y python-cv-bridge`
+
