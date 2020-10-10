@@ -3,9 +3,10 @@ import time
 
 locker = threading.Lock()
 locker2 = threading.Lock()
+
 def setup_thread():
     thread1 = threading.Thread(target=callback1)
-    thread2 = threading.Thread(target=callback2)    
+    thread2 = threading.Thread(target=callback2)
     # thread.join() #need to know how to use join
 
     list_thread = [
