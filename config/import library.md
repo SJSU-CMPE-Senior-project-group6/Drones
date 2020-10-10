@@ -17,4 +17,4 @@ __cv2__
 >`sudo apt-get install -y python-cv-bridge`
 >`sudo apt-get install libraspberrypi-dev`
 >`sudo pip install picamera`
-
+>[download haarcascade_frontalface_default.xml](https://github.com/opencv/opencv/tree/master/data/haarcascades)
