@@ -1,5 +1,6 @@
 #! /usr/bin/env python2
 # -*- coding: UTF-8 -*-
+
 from cv_bridge import CvBridge, CvBridgeError
 import roslib
 import sys
