@@ -1,12 +1,11 @@
 #! /usr/bin/env python2
 # -*- coding: UTF-8 -*-
-
+from cv_bridge import CvBridge, CvBridgeError
 import roslib
-roslib.load_manifest('my_package')
 import sys
 import rospy
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge, CvBridgeError
+
 
 class image_converter:
 	def __init__(self):
@@ -14,6 +13,7 @@ class image_converter:
 		self.bridge = CvBridge()
 		self.image_pub = rospy.Publisher("topic_cv_image", Image, queue_size=1)
 		rospy.init_node('image_converter', anonymous=True)
+		rospy.spin()
 
 	def callback(self, image):
 		try:
@@ -21,3 +21,6 @@ class image_converter:
 			self.image_pub.publish(cv_image)
 		except CvBridgeError as e:
 			print(e)
+
+if __name__ == "__main__":
+	image_cv = image_converter()

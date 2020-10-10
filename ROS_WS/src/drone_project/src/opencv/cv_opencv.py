@@ -12,6 +12,7 @@ class image_analysis:
 		self.image_pub = rospy.Publisher("topic_cv_image", String, queue_size=1)
 		face_cascade = cv2.CascadeClassifier(
 	cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+		rospy.spin()
 
 	def callback(self, image):
 		gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -19,3 +20,6 @@ class image_analysis:
 		for x,y,w,h in faces:
 			info += ( (x+w/2)/gray.shape[1], (y+h/2)/gray.shape[0], (w*h)/gray.size )
 		self.image_pub.publish(info)
+
+if __name__=="__main__":
+	image_processor = image_analysis()
