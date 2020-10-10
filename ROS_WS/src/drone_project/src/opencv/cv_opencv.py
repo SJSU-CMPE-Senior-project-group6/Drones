@@ -10,8 +10,7 @@ class image_analysis:
 	def __init__(self):
 		self.image_sub = rospy.Subscriber("topic_cv_image", Image, self.callback)
 		self.image_pub = rospy.Publisher("topic_cv_image", String, queue_size=1)
-		face_cascade = cv2.CascadeClassifier(
-	cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+		face_cascade = cv2.CascadeClassifier('/home/ros/Desktop/Drones/ROS_WS/src/drone_project/src/opencv/haarcascade_frontalface_default.xml')
 		rospy.spin()
 
 	def callback(self, image):
