@@ -82,6 +82,7 @@ class Accel_Publisher(object):
         self.pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
         self.RC_data = OverrideRCIn()
         self.listener()
+        rospy.rate(100)
         rospy.spin()
 
     def set_default_channel(self):
@@ -133,7 +134,6 @@ class Accel_Publisher(object):
 
     def callback(self, msgs):        
         self.altitude_data = msgs.data
-        print("Altitude: ",self.altitude_data)
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
         # key = 'z'
@@ -145,7 +145,7 @@ class Accel_Publisher(object):
             # else:
             #     print("s")
             #     key = 's'
-            print("Altitude: ",self.altitude_data, " Target: ",self.target_hight)
+            print("Altitude: ",self.altitude_data, " Target: ",self.target_hight, "Timer: ",rospy.Time())
             # if key in self.moveBindings.keys():
             #     self.channel[0] = self.channel[0] + self.moveBindings[key][0]
             #     self.channel[1] = self.channel[1] + self.moveBindings[key][1]
@@ -188,9 +188,9 @@ class Accel_Publisher(object):
             print(e)
 
         finally:
-            self.set_default_channel()
-            self.RC_data.channels = self.channel
-            self.pub.publish(self.RC_data)
+            # self.set_default_channel()
+            # self.RC_data.channels = self.channel
+            # self.pub.publish(self.RC_data)
             print("End Command\n")
 
 if __name__=="__main__":  
