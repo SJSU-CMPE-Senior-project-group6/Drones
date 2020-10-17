@@ -146,16 +146,15 @@ def callback_rc_command():
     RC_data.channels = channel #set default
     pub.publish(RC_data)
     launch_status = False
+    key = 'z'
     try:
         print(msg_info)
         while(1):
-            key = raw_input("Enter your command\n")
-            
-            if altitude_data < target_hight and launch_status == True:
+            # key = raw_input("Enter your command\n")         
+            if altitude_data < target_hight:
                 key = 'w'
             else:
-                if launch_status == True:
-                    key = 's'
+                key = 's'
 
             if key in moveBindings.keys():
                 channel[0] = channel[0] + moveBindings[key][0]
