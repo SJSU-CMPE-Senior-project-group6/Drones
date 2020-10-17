@@ -44,10 +44,10 @@ class Accel_Publisher(object):
         self.inc_rate = 50
         self.dec_rate = -1*self.inc_rate
         self.moveBindings = {
-                'w':(0,0,self.inc_rate,0), #"Throttle up"
-                's':(0,0,self.dec_rate,0), #"Throttle down"
-                'a':(0,0,0,self.dec_rate), #"Yawl left"
-                'd':(0,0,0,self.inc_rate), #"Yawl right"
+                "w":(0,0,self.inc_rate,0), #"Throttle up"
+                "s":(0,0,self.dec_rate,0), #"Throttle down"
+                "a":(0,0,0,self.dec_rate), #"Yawl left"
+                "d":(0,0,0,self.inc_rate), #"Yawl right"
                 '\x1b[A':(0,self.dec_rate,0,0), #"Pitch up"
                 '\x1b[B':(0,self.inc_rate,0,0), #"Pitch down"
                 '\x1b[D':(self.dec_rate,0,0,0), #"Roll Left"
