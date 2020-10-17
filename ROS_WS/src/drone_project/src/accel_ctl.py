@@ -152,8 +152,10 @@ def callback_rc_command():
         while(1):
             # key = raw_input("Enter your command\n")         
             if altitude_data < target_hight:
+                print("w")
                 key = 'w'
             else:
+                print("s")
                 key = 's'
 
             # if key in moveBindings.keys():
@@ -189,9 +191,9 @@ def callback_rc_command():
             #     print("Not a command: ",key,"\n")
             #     if (key == '\x03'):
             #         break
-            print(channel)
-            RC_data.channels = channel
-            pub.publish(RC_data)
+            # print(channel)
+            # RC_data.channels = channel
+            # pub.publish(RC_data)
             time.sleep(1)
 
     except Exception as e:
