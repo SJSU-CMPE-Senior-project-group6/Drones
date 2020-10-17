@@ -72,7 +72,7 @@ class Accel_Publisher(object):
         self.Land = [1500,1500,1030,1000]
 
         self.altitude_data = 0
-        self.target_hight = 1.5 # wanted 1.5
+        self.target_hight = 1.1 # wanted 1.5
         self.launch_status = False
         self.key = 'z'
 
@@ -146,42 +146,41 @@ class Accel_Publisher(object):
             else:
                 print("s")
                 self.key = 's'
-            # if self.key in self.moveBindings.keys():
-            #     self.channel[0] = self.channel[0] + self.moveBindings[key][0]
-            #     self.channel[1] = self.channel[1] + self.moveBindings[key][1]
-            #     self.channel[2] = self.channel[2] + self.moveBindings[key][2]
-            #     self.channel[3] = self.channel[3] + self.moveBindings[key][3]
-            #     self.check_channel_boundary() #check range of the channel not be exceed
+            if self.key in self.moveBindings.keys():
+                self.channel[0] = self.channel[0] + self.moveBindings[self.key][0]
+                self.channel[1] = self.channel[1] + self.moveBindings[self.key][1]
+                self.channel[2] = self.channel[2] + self.moveBindings[self.key][2]
+                self.channel[3] = self.channel[3] + self.moveBindings[self.key][3]
+                self.check_channel_boundary() #check range of the channel not be exceed
     
-            # elif self.key is 'q' or key is 'e': #take off or land
-            #     if self.key is 'q': #take off
-            #         self.takeoff_command()
-            #         print("Takeoff: ",self.channel)
-            #         RC_data.channels = self.channel
-            #         pub.publish(RC_data)
-            #         time.sleep(3) #need at least 3 second
-            #         self.set_default_channel() #restore back default state
-            #         self.launch_status = True
+            elif self.key is 'q' or self.key is 'e': #take off or land
+                if self.key is 'q': #take off
+                    self.takeoff_command()
+                    print("Takeoff: ",self.channel)
+                    self.RC_data.channels = self.channel
+                    self.pub.publish(self.RC_data)
+                    time.sleep(3) #need at least 3 second
+                    self.set_default_channel() #restore back default state
+                    self.launch_status = True
 
-            #     else: #land
-            #         self.land_command()
-            #         print("Land: ",self.channel)
-            #         RC_data.channels = self.channel
-            #         pub.publish(RC_data)
-            #         time.sleep(3) #need at least 3 second
-            #         set_default_channel() #restore back default state
-            #         self.launch_status = False
+                else: #land
+                    self.land_command()
+                    print("Land: ",self.channel)
+                    self.RC_data.channels = self.channel
+                    self.pub.publish(self.RC_data)
+                    time.sleep(3) #need at least 3 second
+                    self.set_default_channel() #restore back default state
+                    self.launch_status = False
             
-            # if self.key is 'z': #reset channel
-            #     self.set_default_channel()
+            if self.key is 'z': #reset channel
+                self.set_default_channel()
 
-            # else:
-            #     print("Not a command: ",key,"\n")
-            #     if (self.key == '\x03'):
-            #         break
-            # print(self.channel)
-            # RC_data.channels = self.channel
-            # pub.publish(RC_data)
+            else:
+                print("Not a command: ",self.key,"\n")
+
+            print(self.channel)
+            self.RC_data.channels = self.channel
+            self.pub.publish(self.RC_data)
         except Exception as e:
             print(e)
 
