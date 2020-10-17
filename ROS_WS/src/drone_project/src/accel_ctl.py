@@ -156,42 +156,43 @@ def callback_rc_command():
             else:
                 key = 's'
 
-            if key in moveBindings.keys():
-                channel[0] = channel[0] + moveBindings[key][0]
-                channel[1] = channel[1] + moveBindings[key][1]
-                channel[2] = channel[2] + moveBindings[key][2]
-                channel[3] = channel[3] + moveBindings[key][3]
-                check_channel_boundary() #check range of the channel not be exceed
+            # if key in moveBindings.keys():
+            #     channel[0] = channel[0] + moveBindings[key][0]
+            #     channel[1] = channel[1] + moveBindings[key][1]
+            #     channel[2] = channel[2] + moveBindings[key][2]
+            #     channel[3] = channel[3] + moveBindings[key][3]
+            #     check_channel_boundary() #check range of the channel not be exceed
       
-            elif key is 'q' or key is 'e': #take off or land
-                if key is 'q': #take off
-                    takeoff_command()
-                    print("Takeoff: ",channel)
-                    RC_data.channels = channel
-                    pub.publish(RC_data)
-                    time.sleep(3) #need at least 3 second
-                    set_default_channel() #restore back default state
-                    launch_status = True
+            # elif key is 'q' or key is 'e': #take off or land
+            #     if key is 'q': #take off
+            #         takeoff_command()
+            #         print("Takeoff: ",channel)
+            #         RC_data.channels = channel
+            #         pub.publish(RC_data)
+            #         time.sleep(3) #need at least 3 second
+            #         set_default_channel() #restore back default state
+            #         launch_status = True
 
-                else: #land
-                    land_command()
-                    print("Land: ",channel)
-                    RC_data.channels = channel
-                    pub.publish(RC_data)
-                    time.sleep(3) #need at least 3 second
-                    set_default_channel() #restore back default state
-                    launch_status = False
+            #     else: #land
+            #         land_command()
+            #         print("Land: ",channel)
+            #         RC_data.channels = channel
+            #         pub.publish(RC_data)
+            #         time.sleep(3) #need at least 3 second
+            #         set_default_channel() #restore back default state
+            #         launch_status = False
             
-            if key is 'z': #reset channel
-                set_default_channel()
+            # if key is 'z': #reset channel
+            #     set_default_channel()
 
-            else:
-                print("Not a command: ",key,"\n")
-                if (key == '\x03'):
-                    break
+            # else:
+            #     print("Not a command: ",key,"\n")
+            #     if (key == '\x03'):
+            #         break
             print(channel)
             RC_data.channels = channel
             pub.publish(RC_data)
+            time.sleep(1)
 
     except Exception as e:
         print(e)
