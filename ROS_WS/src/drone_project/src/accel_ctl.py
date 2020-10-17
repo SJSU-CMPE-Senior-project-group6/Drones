@@ -4,36 +4,6 @@ from mavros_msgs.msg import OverrideRCIn
 from std_msgs.msg import Float64
 import threading
 
-msg_info = """
-Reading from the keyboard  and Publishing to Twist!
----------------------------
-Throttle & Yawl:
-        w
-     a  s  d
-
-Pitch & Roll:
-Arrow key: 
-       up
-left  down  right
-
-Takeoff: q
-Land:    e
-CTRL-C to quit
-"""
-
-inc_rate = 50
-dec_rate = -1*inc_rate
-moveBindings = {
-        'w':(0,0,inc_rate,0), #"Throttle up"
-        's':(0,0,dec_rate,0), #"Throttle down"
-        'a':(0,0,0,dec_rate), #"Yawl left"
-        'd':(0,0,0,inc_rate), #"Yawl right"
-        '\x1b[A':(0,dec_rate,0,0), #"Pitch up"
-        '\x1b[B':(0,inc_rate,0,0), #"Pitch down"
-        '\x1b[D':(dec_rate,0,0,0), #"Roll Left"
-        '\x1b[C':(inc_rate,0,0,0), #"Roll right"
-}
-
 """
 channel:    Min    Max    Default
 #1:Roll     1000 - 2001   1500
@@ -52,160 +22,196 @@ Takeoff:  1023     1999    1990     1000
 Land:     1021     1000    1990     1995
 hold for more than 3s to send above command            
 """
+class Accel_Publisher(object):
+    def __init__(self):
+        self.msg_info = """
+        Reading from the keyboard  and Publishing to Twist!
+        ---------------------------
+        Throttle & Yawl:
+                w
+            a  s  d
 
-            #Min, Max, Default
-Roll =      [1000,2001,1500]
-Pitch =     [1000,2001,1500]
-Throttle =  [1019,2001,1030]
-Yawl =      [1000,2001,1500]
+        Pitch & Roll:
+        Arrow key: 
+            up
+        left  down  right
 
-#Mode channel[4:5]
-Mode1 = [1200,1000] #Stable
-Mode2 = [1300,1500] #AltHold
-Mode3 = [1400,2000] #Land
+        Takeoff: q
+        Land:    e
+        CTRL-C to quit
+        """
 
-#Channel defalut channel[0:3]
-channel = [1500,1500,1030,1500,1200,1000,1500,1500] #defalut mode is mode#1: Stabilize
+        self.inc_rate = 50
+        self.dec_rate = -1*self.inc_rate
+        self.moveBindings = {
+                'w':(0,0,self.inc_rate,0), #"Throttle up"
+                's':(0,0,self.dec_rate,0), #"Throttle down"
+                'a':(0,0,0,self.dec_rate), #"Yawl left"
+                'd':(0,0,0,self.inc_rate), #"Yawl right"
+                '\x1b[A':(0,self.dec_rate,0,0), #"Pitch up"
+                '\x1b[B':(0,self.inc_rate,0,0), #"Pitch down"
+                '\x1b[D':(self.dec_rate,0,0,0), #"Roll Left"
+                '\x1b[C':(self.inc_rate,0,0,0), #"Roll right"
+        }
+                         #Min, Max, Default
+        self.Roll =      [1000,2001,1500]
+        self.Pitch =     [1000,2001,1500]
+        self.Throttle =  [1019,2001,1030]
+        self.Yawl =      [1000,2001,1500]
 
-#essential command channel[0:3]
-Take_off = [1500,1500,1030,1997]
-Land = [1500,1500,1030,1000]
+        #Mode channel[4:5]
+        self.Mode1 = [1200,1000] #Stable
+        self.Mode2 = [1300,1500] #AltHold
+        self.Mode3 = [1400,2000] #Land
 
-altitude_data = 0
-target_hight = 0.5 # wanted 1.5
+        #Channel defalut channel[0:3]
+        self.channel = [1500,1500,1030,1500,1200,1000,1500,1500] #defalut mode is mode#1: Stabilize
 
-def set_default_channel():
-    # default_channel = [1500,1500,1030,1500,1200,1000,1500,1500]
-    print("Reset channel:")
-    channel[0] = Roll[2]
-    channel[1] = Pitch[2]
-    channel[2] = Throttle[2]
-    channel[3] = Yawl[2]
+        #essential command channel[0:3]
+        self.Take_off = [1500,1500,1030,1997]
+        self.Land = [1500,1500,1030,1000]
 
-    channel[4] = Mode1[0]
-    channel[5] = Mode1[1]
-    channel[6] = 1500
-    channel[7] = 1500
+        self.altitude_data = 0
+        self.target_hight = 0.5 # wanted 1.5
+        self.launch_status = False
 
-def check_channel_boundary():
-    #channel 0 Roll [1000,2001,1500]
-    if channel[0] <= Roll[0]:
-        channel[0] = Roll[0]
-    elif channel[0] >= Roll[1]:
-        channel[0] = Roll[1]
-    
-    #channel 1 Pitch [1000,2001,1500]
-    if channel[1] <= Pitch[0]:
-        channel[1] = Pitch[0]
-    elif channel[1] >= Pitch[1]:
-        channel[1] = Pitch[1]
+        # locker for thread safe
+        self.lock = threading.Lock()
 
-    #channel 2 Throttle [1019,2001,1030]
-    if channel[2] <= Throttle[0]:
-        channel[2] = Throttle[0]
-    elif channel[2] >= Throttle[1]:
-        channel[2] = Throttle[1]
+    def set_default_channel(self):
+        # default_channel = [1500,1500,1030,1500,1200,1000,1500,1500]
+        print("Reset channel:")
+        self.channel[0] = self.Roll[2]
+        self.channel[1] = self.Pitch[2]
+        self.channel[2] = self.Throttle[2]
+        self.channel[3] = self.Yawl[2]
 
-    #channel 3 Yawl [1000,2001,1500]
-    if channel[3] <= Yawl[0]:
-        channel[3] = Yawl[0]
-    elif channel[3] >= Yawl[1]:
-        channel[3] = Yawl[1]
+        self.channel[4] = self.Mode1[0]
+        self.channel[5] = self.Mode1[1]
+        self.channel[6] = 1500
+        self.channel[7] = 1500
+
+    def check_channel_boundary(self):
+        #channel 0 Roll [1000,2001,1500]
+        if self.channel[0] <= self.Roll[0]:
+            self.channel[0] = self.Roll[0]
+        elif self.channel[0] >= self.Roll[1]:
+            self.channel[0] = self.Roll[1]
         
-def land_command():
-    channel[:4] = Land
+        #channel 1 Pitch [1000,2001,1500]
+        if self.channel[1] <= self.Pitch[0]:
+            self.channel[1] = self.Pitch[0]
+        elif self.channel[1] >= self.Pitch[1]:
+            self.channel[1] = self.Pitch[1]
 
-def takeoff_command():
-    channel[:4] = Take_off
+        #channel 2 Throttle [1019,2001,1030]
+        if self.channel[2] <= self.Throttle[0]:
+            self.channel[2] = self.Throttle[0]
+        elif self.channel[2] >= self.Throttle[1]:
+            self.channel[2] = self.Throttle[1]
 
-def setup_thread():
-    altitude_thread = threading.Thread(target=callback_altitude)
-    rc_command_thread = threading.Thread(target=callback_rc_command)
-
-    thread_list = [
-        altitude_thread,
-        rc_command_thread
-    ]
-
-    for thread in thread_list:
-        thread.daemon =False
-        thread.start()
-    print("Thread started")
-
-def callback_altitude():
-    rospy.Subscriber("/mavros/global_position/rel_alt",Float64,callback)
-    rospy.spin()
-
-def callback(msgs):
-    altitude_data = msgs.data
-    # print("Altitude: ",altitude_data)
-
-def callback_rc_command():
-    pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
-    RC_data = OverrideRCIn()
-    RC_data.channels = channel #set default
-    pub.publish(RC_data)
-    launch_status = False
-    key = 'z'
-    try:
-        print(msg_info)
-        while(1):
-            # key = raw_input("Enter your command\n")         
-            if altitude_data < target_hight:
-                print("w")
-                key = 'w'
-            else:
-                print("s")
-                key = 's'
-            print("Altitude: ",altitude_data, " Target: ",target_hight)
-            # if key in moveBindings.keys():
-            #     channel[0] = channel[0] + moveBindings[key][0]
-            #     channel[1] = channel[1] + moveBindings[key][1]
-            #     channel[2] = channel[2] + moveBindings[key][2]
-            #     channel[3] = channel[3] + moveBindings[key][3]
-            #     check_channel_boundary() #check range of the channel not be exceed
-      
-            # elif key is 'q' or key is 'e': #take off or land
-            #     if key is 'q': #take off
-            #         takeoff_command()
-            #         print("Takeoff: ",channel)
-            #         RC_data.channels = channel
-            #         pub.publish(RC_data)
-            #         time.sleep(3) #need at least 3 second
-            #         set_default_channel() #restore back default state
-            #         launch_status = True
-
-            #     else: #land
-            #         land_command()
-            #         print("Land: ",channel)
-            #         RC_data.channels = channel
-            #         pub.publish(RC_data)
-            #         time.sleep(3) #need at least 3 second
-            #         set_default_channel() #restore back default state
-            #         launch_status = False
+        #channel 3 Yawl [1000,2001,1500]
+        if self.channel[3] <= self.Yawl[0]:
+            self.channel[3] = self.Yawl[0]
+        elif self.channel[3] >= self.Yawl[1]:
+            self.channel[3] = self.Yawl[1]
             
-            # if key is 'z': #reset channel
-            #     set_default_channel()
+    def land_command(self):
+        self.channel[:4] = self.Land
 
-            # else:
-            #     print("Not a command: ",key,"\n")
-            #     if (key == '\x03'):
-            #         break
-            # print(channel)
-            # RC_data.channels = channel
-            # pub.publish(RC_data)
-            time.sleep(1)
+    def takeoff_command(self):
+        self.channel[:4] = self.Take_off
 
-    except Exception as e:
-        print(e)
+    def setup_thread(self):
+        altitude_thread = threading.Thread(target=self.callback_altitude)
+        rc_command_thread = threading.Thread(target=self.callback_rc_command)
 
-    finally:
-        set_default_channel()
-        RC_data.channels = channel
+        thread_list = [
+            altitude_thread,
+            rc_command_thread
+        ]
+
+        for thread in thread_list:
+            thread.daemon =False
+            thread.start()
+        print("Thread started")
+
+    def callback_altitude(self):
+        rospy.Subscriber("/mavros/global_position/rel_alt",Float64,self.callback)
+        rospy.spin()
+
+    def callback(self, msgs):
+        with self.lock:
+            self.altitude_data = msgs.data
+            # print("Altitude: ",self.altitude_data)
+
+    def callback_rc_command(self):
+        pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
+        RC_data = OverrideRCIn()
+        RC_data.channels = self.channel #set default
         pub.publish(RC_data)
-        print("End Command\n")
+        key = 'z'
+        try:
+            print(self.msg_info)
+            while(1):
+                with self.lock:
+                    # key = raw_input("Enter your command\n")         
+                    if self.altitude_data < self.target_hight:
+                        print("w")
+                        key = 'w'
+                    else:
+                        print("s")
+                        key = 's'
+                    print("Altitude: ",self.altitude_data, " Target: ",self.target_hight)
+                    # if key in self.moveBindings.keys():
+                    #     self.channel[0] = self.channel[0] + self.moveBindings[key][0]
+                    #     self.channel[1] = self.channel[1] + self.moveBindings[key][1]
+                    #     self.channel[2] = self.channel[2] + self.moveBindings[key][2]
+                    #     self.channel[3] = self.channel[3] + self.moveBindings[key][3]
+                    #     self.check_channel_boundary() #check range of the channel not be exceed
+            
+                    # elif key is 'q' or key is 'e': #take off or land
+                    #     if key is 'q': #take off
+                    #         self.takeoff_command()
+                    #         print("Takeoff: ",self.channel)
+                    #         RC_data.channels = self.channel
+                    #         pub.publish(RC_data)
+                    #         time.sleep(3) #need at least 3 second
+                    #         self.set_default_channel() #restore back default state
+                    #         self.launch_status = True
+
+                    #     else: #land
+                    #         self.land_command()
+                    #         print("Land: ",self.channel)
+                    #         RC_data.channels = self.channel
+                    #         pub.publish(RC_data)
+                    #         time.sleep(3) #need at least 3 second
+                    #         set_default_channel() #restore back default state
+                    #         self.launch_status = False
+                    
+                    # if key is 'z': #reset channel
+                    #     self.set_default_channel()
+
+                    # else:
+                    #     print("Not a command: ",key,"\n")
+                    #     if (key == '\x03'):
+                    #         break
+                    # print(self.channel)
+                    # RC_data.channels = self.channel
+                    # pub.publish(RC_data)
+                    time.sleep(1)
+
+        except Exception as e:
+            print(e)
+
+        finally:
+            self.set_default_channel()
+            RC_data.channels = self.channel
+            pub.publish(RC_data)
+            print("End Command\n")
 
 if __name__=="__main__":  
     rospy.init_node('Override_RCIn_by_keyboard')
-    setup_thread()
+    flight_rc_ctl = Accel_Publisher()
+    flight_rc_ctl.setup_thread()
 
