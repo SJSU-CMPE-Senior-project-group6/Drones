@@ -22,25 +22,25 @@ Takeoff:  1023     1999    1990     1000
 Land:     1021     1000    1990     1995
 hold for more than 3s to send above command            
 """
+print_msgs = """
+Reading from the keyboard  and Publishing to Twist!
+---------------------------
+Throttle & Yawl:
+        w
+    a  s  d
+
+Pitch & Roll:
+Arrow key: 
+    up
+left  down  right
+
+Takeoff: q
+Land:    e
+CTRL-C to quit
+"""
 class Accel_Publisher(object):
     def __init__(self):
-        self.msg_info = """
-        Reading from the keyboard  and Publishing to Twist!
-        ---------------------------
-        Throttle & Yawl:
-                w
-            a  s  d
-
-        Pitch & Roll:
-        Arrow key: 
-            up
-        left  down  right
-
-        Takeoff: q
-        Land:    e
-        CTRL-C to quit
-        """
-
+        self.msg_info = print_msgs
         self.inc_rate = 50
         self.dec_rate = -1*self.inc_rate
         self.moveBindings = {
@@ -141,9 +141,10 @@ class Accel_Publisher(object):
         rospy.spin()
 
     def callback(self, msgs):
+        print("Got alt data")
         with self.lock:
             self.altitude_data = msgs.data
-            # print("Altitude: ",self.altitude_data)
+            print("Altitude: ",self.altitude_data)
 
     def callback_rc_command(self):
         pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
