@@ -74,6 +74,7 @@ class Accel_Publisher(object):
         self.altitude_data = 0
         self.target_hight = 1.5 # wanted 1.5
         self.launch_status = False
+        self.key = 'z'
 
         # locker for thread safe
         # self.lock = threading.Lock()
@@ -82,7 +83,7 @@ class Accel_Publisher(object):
         self.pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
         self.RC_data = OverrideRCIn()
         self.listener()
-        rospy.Rate(1000)
+        # rospy.Rate(1000)
         rospy.spin()
 
     def set_default_channel(self):
@@ -136,25 +137,24 @@ class Accel_Publisher(object):
         self.altitude_data = msgs.data
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
-        # key = 'z'
         try:
-            # key = raw_input("Enter your command\n")         
+            # key = raw_input("Enter your command\n")       
+            print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
             if self.altitude_data < self.target_hight:
                 print("w")
-                key = 'w'
+                self.key = 'w'
             else:
                 print("s")
-                key = 's'
-            print("Altitude: ",self.altitude_data, " Target: ",self.target_hight,rospy.Time.now())
-            # if key in self.moveBindings.keys():
+                self.key = 's'
+            # if self.key in self.moveBindings.keys():
             #     self.channel[0] = self.channel[0] + self.moveBindings[key][0]
             #     self.channel[1] = self.channel[1] + self.moveBindings[key][1]
             #     self.channel[2] = self.channel[2] + self.moveBindings[key][2]
             #     self.channel[3] = self.channel[3] + self.moveBindings[key][3]
             #     self.check_channel_boundary() #check range of the channel not be exceed
     
-            # elif key is 'q' or key is 'e': #take off or land
-            #     if key is 'q': #take off
+            # elif self.key is 'q' or key is 'e': #take off or land
+            #     if self.key is 'q': #take off
             #         self.takeoff_command()
             #         print("Takeoff: ",self.channel)
             #         RC_data.channels = self.channel
@@ -172,12 +172,12 @@ class Accel_Publisher(object):
             #         set_default_channel() #restore back default state
             #         self.launch_status = False
             
-            # if key is 'z': #reset channel
+            # if self.key is 'z': #reset channel
             #     self.set_default_channel()
 
             # else:
             #     print("Not a command: ",key,"\n")
-            #     if (key == '\x03'):
+            #     if (self.key == '\x03'):
             #         break
             # print(self.channel)
             # RC_data.channels = self.channel
@@ -189,7 +189,6 @@ class Accel_Publisher(object):
             # self.set_default_channel()
             # self.RC_data.channels = self.channel
             # self.pub.publish(self.RC_data)
-            print("End Command\n")
 
 if __name__=="__main__":  
     flight_rc_ctl = Accel_Publisher()
