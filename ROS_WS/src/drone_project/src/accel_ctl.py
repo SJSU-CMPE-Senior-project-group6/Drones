@@ -186,7 +186,7 @@ def callback_rc_command():
                 set_default_channel()
 
             else:
-                print("Not a command\n")
+                print("Not a command: ",key,"\n")
                 if (key == '\x03'):
                     break
             print(channel)
