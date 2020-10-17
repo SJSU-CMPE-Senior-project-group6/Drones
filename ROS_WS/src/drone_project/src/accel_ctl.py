@@ -44,10 +44,10 @@ class Accel_Publisher(object):
         self.inc_rate = 50
         self.dec_rate = -1*self.inc_rate
         self.moveBindings = {
-                "w":(0,0,self.inc_rate,0), #"Throttle up"
-                "s":(0,0,self.dec_rate,0), #"Throttle down"
-                "a":(0,0,0,self.dec_rate), #"Yawl left"
-                "d":(0,0,0,self.inc_rate), #"Yawl right"
+                'w':(0,0,self.inc_rate,0), #"Throttle up"
+                's':(0,0,self.dec_rate,0), #"Throttle down"
+                'a':(0,0,0,self.dec_rate), #"Yawl left"
+                'd':(0,0,0,self.inc_rate), #"Yawl right"
                 '\x1b[A':(0,self.dec_rate,0,0), #"Pitch up"
                 '\x1b[B':(0,self.inc_rate,0,0), #"Pitch down"
                 '\x1b[D':(self.dec_rate,0,0,0), #"Roll Left"
@@ -138,14 +138,15 @@ class Accel_Publisher(object):
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
         try:
-            # key = raw_input("Enter your command\n")       
-            print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
-            if self.altitude_data < self.target_hight:
-                print("w")
-                self.key = 'w'
-            else:
-                print("s")
-                self.key = 's'
+            self.key = raw_input("Enter your command\n")       
+            # print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
+            # if self.altitude_data < self.target_hight:
+            #     print("w")
+            #     self.key = 'w'
+            # else:
+            #     print("s")
+            #     self.key = 's'
+            print(type(self.key)," ", type('w'))
             if self.key in self.moveBindings.keys():
                 self.channel[0] = self.channel[0] + self.moveBindings[self.key][0]
                 self.channel[1] = self.channel[1] + self.moveBindings[self.key][1]
