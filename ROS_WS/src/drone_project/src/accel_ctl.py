@@ -72,7 +72,7 @@ Take_off = [1500,1500,1030,1997]
 Land = [1500,1500,1030,1000]
 
 altitude_data = 0
-target_hight = 1 # wanted 1.5
+target_hight = 0.5 # wanted 1.5
 
 def set_default_channel():
     # default_channel = [1500,1500,1030,1500,1200,1000,1500,1500]
@@ -138,7 +138,7 @@ def callback_altitude():
 
 def callback(msgs):
     altitude_data = msgs.data
-    print("Altitude: ",altitude_data)
+    # print("Altitude: ",altitude_data)
 
 def callback_rc_command():
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
@@ -157,7 +157,7 @@ def callback_rc_command():
             else:
                 print("s")
                 key = 's'
-
+            print("Altitude: ",altitude_data, " Target: ",target_hight)
             # if key in moveBindings.keys():
             #     channel[0] = channel[0] + moveBindings[key][0]
             #     channel[1] = channel[1] + moveBindings[key][1]
