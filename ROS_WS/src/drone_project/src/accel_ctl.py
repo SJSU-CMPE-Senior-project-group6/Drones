@@ -73,7 +73,6 @@ Land = [1500,1500,1030,1000]
 
 altitude_data = 0
 target_hight = 1 # wanted 1.5
-launch_status = False
 
 def set_default_channel():
     # default_channel = [1500,1500,1030,1500,1200,1000,1500,1500]
@@ -146,11 +145,12 @@ def callback_rc_command():
     RC_data = OverrideRCIn()
     RC_data.channels = channel #set default
     pub.publish(RC_data)
+    launch_status = False
     try:
         print(msg_info)
         while(1):
-            # key = raw_input("Enter your command\n")
-            key = 'z'
+            key = raw_input("Enter your command\n")
+            
             if altitude_data < target_hight and launch_status == True:
                 key = 'w'
             else:
