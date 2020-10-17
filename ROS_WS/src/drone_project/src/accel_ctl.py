@@ -82,7 +82,7 @@ class Accel_Publisher(object):
         self.pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
         self.RC_data = OverrideRCIn()
         self.listener()
-        rospy.rate(100)
+        rospy.Rate(100)
         rospy.spin()
 
     def set_default_channel(self):
