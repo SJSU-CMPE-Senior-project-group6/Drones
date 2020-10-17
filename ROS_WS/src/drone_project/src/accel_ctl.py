@@ -77,7 +77,7 @@ class Accel_Publisher(object):
 
         # locker for thread safe
         # self.lock = threading.Lock()
-
+        print(self.msg_info)
         rospy.init_node('Override_RCIn_by_keyboard')
         self.pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
         self.RC_data = OverrideRCIn()
@@ -136,55 +136,53 @@ class Accel_Publisher(object):
         print("Altitude: ",self.altitude_data)
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
-        key = 'z'
+        # key = 'z'
         try:
-            print(self.msg_info)
-            while(1):
-                # key = raw_input("Enter your command\n")         
-                # if self.altitude_data < self.target_hight:
-                #     print("w")
-                #     key = 'w'
-                # else:
-                #     print("s")
-                #     key = 's'
-                print("Altitude: ",self.altitude_data, " Target: ",self.target_hight)
-                # if key in self.moveBindings.keys():
-                #     self.channel[0] = self.channel[0] + self.moveBindings[key][0]
-                #     self.channel[1] = self.channel[1] + self.moveBindings[key][1]
-                #     self.channel[2] = self.channel[2] + self.moveBindings[key][2]
-                #     self.channel[3] = self.channel[3] + self.moveBindings[key][3]
-                #     self.check_channel_boundary() #check range of the channel not be exceed
-        
-                # elif key is 'q' or key is 'e': #take off or land
-                #     if key is 'q': #take off
-                #         self.takeoff_command()
-                #         print("Takeoff: ",self.channel)
-                #         RC_data.channels = self.channel
-                #         pub.publish(RC_data)
-                #         time.sleep(3) #need at least 3 second
-                #         self.set_default_channel() #restore back default state
-                #         self.launch_status = True
+            # key = raw_input("Enter your command\n")         
+            # if self.altitude_data < self.target_hight:
+            #     print("w")
+            #     key = 'w'
+            # else:
+            #     print("s")
+            #     key = 's'
+            print("Altitude: ",self.altitude_data, " Target: ",self.target_hight)
+            # if key in self.moveBindings.keys():
+            #     self.channel[0] = self.channel[0] + self.moveBindings[key][0]
+            #     self.channel[1] = self.channel[1] + self.moveBindings[key][1]
+            #     self.channel[2] = self.channel[2] + self.moveBindings[key][2]
+            #     self.channel[3] = self.channel[3] + self.moveBindings[key][3]
+            #     self.check_channel_boundary() #check range of the channel not be exceed
+    
+            # elif key is 'q' or key is 'e': #take off or land
+            #     if key is 'q': #take off
+            #         self.takeoff_command()
+            #         print("Takeoff: ",self.channel)
+            #         RC_data.channels = self.channel
+            #         pub.publish(RC_data)
+            #         time.sleep(3) #need at least 3 second
+            #         self.set_default_channel() #restore back default state
+            #         self.launch_status = True
 
-                #     else: #land
-                #         self.land_command()
-                #         print("Land: ",self.channel)
-                #         RC_data.channels = self.channel
-                #         pub.publish(RC_data)
-                #         time.sleep(3) #need at least 3 second
-                #         set_default_channel() #restore back default state
-                #         self.launch_status = False
-                
-                # if key is 'z': #reset channel
-                #     self.set_default_channel()
+            #     else: #land
+            #         self.land_command()
+            #         print("Land: ",self.channel)
+            #         RC_data.channels = self.channel
+            #         pub.publish(RC_data)
+            #         time.sleep(3) #need at least 3 second
+            #         set_default_channel() #restore back default state
+            #         self.launch_status = False
+            
+            # if key is 'z': #reset channel
+            #     self.set_default_channel()
 
-                # else:
-                #     print("Not a command: ",key,"\n")
-                #     if (key == '\x03'):
-                #         break
-                # print(self.channel)
-                # RC_data.channels = self.channel
-                # pub.publish(RC_data)
-                time.sleep(1)
+            # else:
+            #     print("Not a command: ",key,"\n")
+            #     if (key == '\x03'):
+            #         break
+            # print(self.channel)
+            # RC_data.channels = self.channel
+            # pub.publish(RC_data)
+            time.sleep(1)
 
         except Exception as e:
             print(e)
