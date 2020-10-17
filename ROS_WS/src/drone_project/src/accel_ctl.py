@@ -71,6 +71,10 @@ channel = [1500,1500,1030,1500,1200,1000,1500,1500] #defalut mode is mode#1: Sta
 Take_off = [1500,1500,1030,1997]
 Land = [1500,1500,1030,1000]
 
+altitude_data = 0
+target_hight = 1 # wanted 1.5
+launch_status = False
+
 def set_default_channel():
     # default_channel = [1500,1500,1030,1500,1200,1000,1500,1500]
     print("Reset channel:")
@@ -145,7 +149,14 @@ def callback_rc_command():
     try:
         print(msg_info)
         while(1):
-            key = raw_input("Enter your command\n")
+            # key = raw_input("Enter your command\n")
+            key = 'z'
+            if altitude_data < target_hight and launch_status == True:
+                key = 'w'
+            else:
+                if launch_status == True:
+                    key = 's'
+
             if key in moveBindings.keys():
                 channel[0] = channel[0] + moveBindings[key][0]
                 channel[1] = channel[1] + moveBindings[key][1]
@@ -159,16 +170,18 @@ def callback_rc_command():
                     print("Takeoff: ",channel)
                     RC_data.channels = channel
                     pub.publish(RC_data)
-                    time.sleep(2) #need at least 3 second
+                    time.sleep(3) #need at least 3 second
                     set_default_channel() #restore back default state
+                    launch_status = True
 
                 else: #land
                     land_command()
                     print("Land: ",channel)
                     RC_data.channels = channel
                     pub.publish(RC_data)
-                    time.sleep(2) #need at least 3 second
+                    time.sleep(3) #need at least 3 second
                     set_default_channel() #restore back default state
+                    launch_status = False
             
             if key is 'z': #reset channel
                 set_default_channel()
