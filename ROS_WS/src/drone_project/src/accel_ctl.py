@@ -3,7 +3,8 @@ import time
 from mavros_msgs.msg import OverrideRCIn
 from std_msgs.msg import Float64
 import threading
-msg = """
+
+msg_info = """
 Reading from the keyboard  and Publishing to Twist!
 ---------------------------
 Throttle & Yawl:
@@ -52,7 +53,7 @@ Land:     1021     1000    1990     1995
 hold for more than 3s to send above command            
 """
 
-#Min, Max, Default
+            #Min, Max, Default
 Roll =      [1000,2001,1500]
 Pitch =     [1000,2001,1500]
 Throttle =  [1019,2001,1030]
@@ -114,11 +115,19 @@ def land_command():
 def takeoff_command():
     channel[:4] = Take_off
 
-altitude_data = 0
 def setup_thread():
     altitude_thread = threading.Thread(target=callback_altitude)
-    altitude_thread.daemon = False
-    altitude_thread.start()
+    rc_command_thread = threading.Thread(target=callback_rc_command)
+
+    thread_list = [
+        altitude_thread,
+        rc_command_thread
+    ]
+
+    for thread in thread_list:
+        thread.daemon =False
+        thread.start()
+    print("Thread started")
 
 def callback_altitude():
     rospy.Subscriber("/mavros/global_position/rel_alt",Float64,callback)
@@ -128,16 +137,13 @@ def callback(msgs):
     altitude_data = msgs.data
     print("Altitude: ",altitude_data)
 
-if __name__=="__main__":  
+def callback_rc_command():
     pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
-    print("Started RC Override Ctl")
-    rospy.init_node('Override_RCIn_by_keyboard')
     RC_data = OverrideRCIn()
     RC_data.channels = channel #set default
     pub.publish(RC_data)
-    setup_thread()
     try:
-        print(msg)
+        print(msg_info)
         while(1):
             key = raw_input("Enter your command\n")
             if key in moveBindings.keys():
@@ -183,3 +189,8 @@ if __name__=="__main__":
         RC_data.channels = channel
         pub.publish(RC_data)
         print("End Command\n")
+
+if __name__=="__main__":  
+    rospy.init_node('Override_RCIn_by_keyboard')
+    setup_thread()
+
