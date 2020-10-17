@@ -186,6 +186,7 @@ class Accel_Publisher(object):
             print(e)
 
         finally:
+            pass
             # self.set_default_channel()
             # self.RC_data.channels = self.channel
             # self.pub.publish(self.RC_data)
