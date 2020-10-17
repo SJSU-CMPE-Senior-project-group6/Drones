@@ -72,7 +72,7 @@ class Accel_Publisher(object):
         self.Land = [1500,1500,1030,1000]
 
         self.altitude_data = 0
-        self.target_hight = 0.5 # wanted 1.5
+        self.target_hight = 1.5 # wanted 1.5
         self.launch_status = False
 
         # locker for thread safe
@@ -82,7 +82,7 @@ class Accel_Publisher(object):
         self.pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
         self.RC_data = OverrideRCIn()
         self.listener()
-        rospy.Rate(5)
+        rospy.Rate(1000)
         rospy.spin()
 
     def set_default_channel(self):
@@ -139,13 +139,13 @@ class Accel_Publisher(object):
         # key = 'z'
         try:
             # key = raw_input("Enter your command\n")         
-            # if self.altitude_data < self.target_hight:
-            #     print("w")
-            #     key = 'w'
-            # else:
-            #     print("s")
-            #     key = 's'
-            print("Altitude: ",self.altitude_data, " Target: ",self.target_hight, "Timer: ",rospy.Time.now())
+            if self.altitude_data < self.target_hight:
+                print("w")
+                key = 'w'
+            else:
+                print("s")
+                key = 's'
+            print("Altitude: ",self.altitude_data, " Target: ",self.target_hight,rospy.Time.now())
             # if key in self.moveBindings.keys():
             #     self.channel[0] = self.channel[0] + self.moveBindings[key][0]
             #     self.channel[1] = self.channel[1] + self.moveBindings[key][1]
