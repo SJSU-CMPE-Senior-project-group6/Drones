@@ -146,13 +146,13 @@ class Accel_Publisher(object):
             # else:
             #     print("s")
             #     self.key = 's'
-            print(type(self.key)," ", type('w'))
             if self.key in self.moveBindings.keys():
                 self.channel[0] = self.channel[0] + self.moveBindings[self.key][0]
                 self.channel[1] = self.channel[1] + self.moveBindings[self.key][1]
                 self.channel[2] = self.channel[2] + self.moveBindings[self.key][2]
                 self.channel[3] = self.channel[3] + self.moveBindings[self.key][3]
                 self.check_channel_boundary() #check range of the channel not be exceed
+                print("get: ",self.key)
     
             elif self.key is 'q' or self.key is 'e': #take off or land
                 if self.key is 'q': #take off
@@ -173,7 +173,8 @@ class Accel_Publisher(object):
                     self.set_default_channel() #restore back default state
                     self.launch_status = False
             
-            if self.key is 'z': #reset channel
+            elif self.key is 'z': #reset channel
+                print("get: ",self.key)
                 self.set_default_channel()
 
             else:
