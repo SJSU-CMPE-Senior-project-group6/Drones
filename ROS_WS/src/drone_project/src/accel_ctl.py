@@ -41,7 +41,7 @@ CTRL-C to quit
 class Accel_Publisher(object):
     def __init__(self):
         self.msg_info = print_msgs
-        self.inc_rate = 50
+        self.inc_rate = 100
         self.dec_rate = -1*self.inc_rate
         self.moveBindings = {
                 'w':(0,0,self.inc_rate,0), #"Throttle up"
@@ -141,10 +141,8 @@ class Accel_Publisher(object):
             # self.key = raw_input("Enter your command\n")       
             # print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
             if self.altitude_data < self.target_hight:
-                print("w")
                 self.key = 'w'
             else:
-                print("s")
                 self.key = 's'
             if self.key in self.moveBindings.keys():
                 self.channel[0] = self.channel[0] + self.moveBindings[self.key][0]
