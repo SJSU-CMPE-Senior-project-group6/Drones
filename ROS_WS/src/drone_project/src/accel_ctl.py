@@ -138,14 +138,14 @@ class Accel_Publisher(object):
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
         try:
-            self.key = raw_input("Enter your command\n")       
+            # self.key = raw_input("Enter your command\n")       
             # print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
-            # if self.altitude_data < self.target_hight:
-            #     print("w")
-            #     self.key = 'w'
-            # else:
-            #     print("s")
-            #     self.key = 's'
+            if self.altitude_data < self.target_hight:
+                print("w")
+                self.key = 'w'
+            else:
+                print("s")
+                self.key = 's'
             if self.key in self.moveBindings.keys():
                 self.channel[0] = self.channel[0] + self.moveBindings[self.key][0]
                 self.channel[1] = self.channel[1] + self.moveBindings[self.key][1]
