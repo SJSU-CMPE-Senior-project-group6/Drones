@@ -174,7 +174,7 @@ class Accel_Publisher(object):
         if self.set_init_altitude == True:
             try:
                 current_error = self.target_hight - self.altitude_data
-                self.throttle_change_rate = self.pid_control(current_error, 3, 0.001, 2)
+                self.throttle_change_rate = self.pid_control(current_error, 4, 0.001, 2)
                 print("change rate: ",round(self.throttle_change_rate,2), "error: ",round(current_error,2))
                 
                 # self.pitch_change_rate = self.pid_control(current_error, 4, 0.001, 5)
