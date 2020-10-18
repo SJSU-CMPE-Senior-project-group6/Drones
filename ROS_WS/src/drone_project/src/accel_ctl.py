@@ -41,23 +41,26 @@ CTRL-C to quit
 class Accel_Publisher(object):
     def __init__(self):
         self.msg_info = print_msgs
-        self.inc_rate = 100
-        self.dec_rate = -1*self.inc_rate
+        self.throttle_change_rate = 100
+        self.pitch_change_rate = 100
+        self.yaw_change_rate = 100
+        self.roll_change_rate = 100
+
         self.moveBindings = {
-                'w':(0,0,self.inc_rate,0), #"Throttle up"
-                's':(0,0,self.dec_rate,0), #"Throttle down"
-                'a':(0,0,0,self.dec_rate), #"Yawl left"
-                'd':(0,0,0,self.inc_rate), #"Yawl right"
-                'up':(0,self.dec_rate,0,0), #"Pitch up"
-                'down':(0,self.inc_rate,0,0), #"Pitch down"
-                'left':(self.dec_rate,0,0,0), #"Roll Left"
-                'right':(self.inc_rate,0,0,0), #"Roll right"
+                'w':(0,0,self.throttle_change_rate,0), #"Throttle up"
+                's':(0,0,self.throttle_change_rate,0), #"Throttle down"
+                'a':(0,0,0,self.yaw_change_rate), #"Yaw left"
+                'd':(0,0,0,self.yaw_change_rate), #"Yaw right"
+                'up':(0,self.pitch_change_rate,0,0), #"Pitch up"
+                'down':(0,self.pitch_change_rate,0,0), #"Pitch down"
+                'left':(self.roll_change_rate,0,0,0), #"Roll Left"
+                'right':(self.roll_change_rate,0,0,0), #"Roll right"
         }
                          #Min, Max, Default
         self.Roll =      [1000,2001,1500]
         self.Pitch =     [1000,2001,1500]
         self.Throttle =  [1019,2001,1030]
-        self.Yawl =      [1000,2001,1500]
+        self.Yaw =      [1000,2001,1500]
 
         #Mode channel[4:5]
         self.Mode1 = [1200,1000] #Stable
@@ -79,6 +82,14 @@ class Accel_Publisher(object):
         self.launch_status = False
         self.key = 'q'
 
+        #PID 
+        self.curr_error = 0.0
+        self.prev_error = 0.0
+        self.sum_error = 0.0
+        self.curr_error_deriv = 0.0
+        self.control = 0.0
+        self.dt = 0.02
+
         # locker for thread safe
         # self.lock = threading.Lock()
         print(self.msg_info)
@@ -89,13 +100,25 @@ class Accel_Publisher(object):
         # rospy.Rate(1000)
         rospy.spin()
 
+    def pid_control(self, current_error, Kp, Ki, Kd):
+	    # insert your code from here
+        self.prev_error = self.curr_error
+        self.curr_error = current_error
+
+        self.sum_error = self.sum_error + self.curr_error * self.dt
+        self.curr_error_deriv = (self.curr_error - self.prev_error) / self.dt
+
+        # Calculate PID control
+        self.control = Kp * self.curr_error + Ki * self.sum_error + Kd * self.curr_error_deriv
+        return self.control
+
     def set_default_channel(self):
         # default_channel = [1500,1500,1030,1500,1200,1000,1500,1500]
         print("Reset channel:")
         self.channel[0] = self.Roll[2]
         self.channel[1] = self.Pitch[2]
         self.channel[2] = self.Throttle[2]
-        self.channel[3] = self.Yawl[2]
+        self.channel[3] = self.Yaw[2]
 
         self.channel[4] = self.Mode1[0]
         self.channel[5] = self.Mode1[1]
@@ -122,11 +145,12 @@ class Accel_Publisher(object):
             self.channel[2] = self.Throttle[1]
 
         #channel 3 Yawl [1000,2001,1500]
-        if self.channel[3] <= self.Yawl[0]:
-            self.channel[3] = self.Yawl[0]
-        elif self.channel[3] >= self.Yawl[1]:
-            self.channel[3] = self.Yawl[1]
-            
+        if self.channel[3] <= self.Yaw[0]:
+            self.channel[3] = self.Yaw[0]
+        elif self.channel[3] >= self.Yaw[1]:
+            self.channel[3] = self.Yaw[1]
+
+
     def land_command(self):
         self.channel[:4] = self.Land
 
@@ -149,17 +173,25 @@ class Accel_Publisher(object):
         
         if self.set_init_altitude == True:
             try:
-                # self.key = raw_input("Enter your command\n")       
-                if self.altitude_data < self.target_hight and self.launch_status == True:
+                current_error = self.target_hight - self.altitude_data
+                self.throttle_change_rate = self.pid_control(current_error, 4, 0.001, 5)
+                print("change rate: ",self.throttle_change_rate)
+                
+                # self.pitch_change_rate = self.pid_control(current_error, 4, 0.001, 5)
+                # self.yaw_change_rate = self.pid_control(current_error, 4, 0.001, 5)
+                # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
+
+                if self.throttle_change_rate > 0 and self.launch_status == True:
                     self.key = 'w'
                 else:
                     if self.launch_status == True:
                         self.key = 's'
+
                 if self.key in self.moveBindings.keys():
-                    self.channel[0] = self.channel[0] + self.moveBindings[self.key][0]
-                    self.channel[1] = self.channel[1] + self.moveBindings[self.key][1]
-                    self.channel[2] = self.channel[2] + self.moveBindings[self.key][2]
-                    self.channel[3] = self.channel[3] + self.moveBindings[self.key][3]
+                    self.channel[0] += self.moveBindings[self.key][0]
+                    self.channel[1] += self.moveBindings[self.key][1]
+                    self.channel[2] += self.moveBindings[self.key][2]
+                    self.channel[3] += self.moveBindings[self.key][3]
                     self.check_channel_boundary() #check range of the channel not be exceed
                     print("get: ",self.key)
         
