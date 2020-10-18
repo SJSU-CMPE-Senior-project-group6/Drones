@@ -181,10 +181,10 @@ class Accel_Publisher(object):
                 # self.yaw_change_rate = self.pid_control(current_error, 4, 0.001, 5)
                 # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
 
-                if self.throttle_change_rate > 0 and self.launch_status == True:
-                    self.key = 'w'
-                else:
-                    if self.launch_status == True:
+                if self.launch_status == True:
+                    if self.throttle_change_rate > 0:
+                        self.key = 'w'
+                    else:
                         self.key = 's'
 
                 if self.key in self.moveBindings.keys():
