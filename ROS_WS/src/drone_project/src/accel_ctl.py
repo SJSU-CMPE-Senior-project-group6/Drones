@@ -169,7 +169,7 @@ class Accel_Publisher(object):
                         self.RC_data.channels = self.channel
                         self.pub.publish(self.RC_data)
                         time.sleep(3) #need at least 3 second
-                        self.pub.publish(self.RC_data)
+                        # self.pub.publish(self.RC_data)
                         self.set_default_channel() #restore back default state
                         self.launch_status = True
 
