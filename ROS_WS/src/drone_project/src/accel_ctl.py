@@ -41,10 +41,10 @@ CTRL-C to quit
 class Accel_Publisher(object):
     def __init__(self):
         self.msg_info = print_msgs
-        self.throttle_change_rate = 100
-        self.pitch_change_rate = 100
-        self.yaw_change_rate = 100
-        self.roll_change_rate = 100
+        self.throttle_change_rate = 0
+        self.pitch_change_rate = 0
+        self.yaw_change_rate = 0
+        self.roll_change_rate = 0
 
         self.moveBindings = {
                 'w':(0,0,self.throttle_change_rate,0), #"Throttle up"
@@ -187,26 +187,14 @@ class Accel_Publisher(object):
                     else:
                         self.key = 's'
 
-                self.moveBindings = {
-                        'w':(0,0,self.throttle_change_rate,0), #"Throttle up"
-                        's':(0,0,self.throttle_change_rate,0), #"Throttle down"
-                        'a':(0,0,0,self.yaw_change_rate), #"Yaw left"
-                        'd':(0,0,0,self.yaw_change_rate), #"Yaw right"
-                        'up':(0,self.pitch_change_rate,0,0), #"Pitch up"
-                        'down':(0,self.pitch_change_rate,0,0), #"Pitch down"
-                        'left':(self.roll_change_rate,0,0,0), #"Roll Left"
-                        'right':(self.roll_change_rate,0,0,0), #"Roll right"
-                }
-                
-                if self.key in self.moveBindings.keys():
-                    self.channel[0] += self.moveBindings[self.key][0]
-                    self.channel[1] += self.moveBindings[self.key][1]
-                    self.channel[2] += self.moveBindings[self.key][2]
-                    self.channel[3] += self.moveBindings[self.key][3]
-                    self.check_channel_boundary() #check range of the channel not be exceed
-                    print("get: ",self.key)
+                self.channel[0] += int(self.roll_change_rate)
+                self.channel[1] += int(self.pitch_change_rate)
+                self.channel[2] += int(self.throttle_change_rate)
+                self.channel[3] += int(self.yaw_change_rate)
+                self.check_channel_boundary() #check range of the channel not be exceed
+                print("get: ",self.key)
         
-                elif self.key is 'q' or self.key is 'e': #take off or land
+                if self.key is 'q' or self.key is 'e': #take off or land
                     if self.key is 'q': #take off
                         self.takeoff_command()
                         print("Takeoff: ",self.channel)
