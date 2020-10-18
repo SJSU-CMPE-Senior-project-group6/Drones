@@ -197,7 +197,7 @@ class Accel_Publisher(object):
                 # self.set_default_channel()
                 # self.RC_data.channels = self.channel
                 # self.pub.publish(self.RC_data)
-         else:
+        else:
              print("Initial altitude hight not set")
 
 if __name__=="__main__":  
