@@ -74,7 +74,8 @@ class Accel_Publisher(object):
         self.altitude_data = 0
         self.init_altitude = 0.0
         self.set_init_altitude = False
-        self.target_hight = 1.1 # wanted 1.5
+        self.target_hight = 0 
+        self.target_hight_offset = 1.1 # wanted 1.5
         self.launch_status = False
         self.key = 'q'
 
@@ -143,6 +144,7 @@ class Accel_Publisher(object):
         if self.set_init_altitude == False:
             self.init_altitude = self.altitude_data
             self.set_init_altitude = True
+            self.target_hight = self.target_hight_offset + self.init_altitude
             print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
         
         if self.set_init_altitude == True:
