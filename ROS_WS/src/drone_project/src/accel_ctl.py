@@ -150,10 +150,11 @@ class Accel_Publisher(object):
         if self.set_init_altitude == True:
             try:
                 # self.key = raw_input("Enter your command\n")       
-                if self.altitude_data < self.target_hight:
+                if self.altitude_data < self.target_hight and self.launch_status == True:
                     self.key = 'w'
                 else:
-                    self.key = 's'
+                    if self.launch_status == True:
+                        self.key = 's'
                 if self.key in self.moveBindings.keys():
                     self.channel[0] = self.channel[0] + self.moveBindings[self.key][0]
                     self.channel[1] = self.channel[1] + self.moveBindings[self.key][1]
