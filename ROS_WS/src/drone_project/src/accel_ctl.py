@@ -218,9 +218,6 @@ class Accel_Publisher(object):
                     print("get: ",self.key)
                     self.set_default_channel()
 
-                else:
-                    print("Not a command: ",self.key,"\n")
-
                 print(self.channel)
                 self.RC_data.channels = self.channel
                 self.pub.publish(self.RC_data)
