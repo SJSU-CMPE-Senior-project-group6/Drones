@@ -45,17 +45,7 @@ class Accel_Publisher(object):
         self.pitch_change_rate = 0
         self.yaw_change_rate = 0
         self.roll_change_rate = 0
-
-        self.moveBindings = {
-                'w':(0,0,self.throttle_change_rate,0), #"Throttle up"
-                's':(0,0,self.throttle_change_rate,0), #"Throttle down"
-                'a':(0,0,0,self.yaw_change_rate), #"Yaw left"
-                'd':(0,0,0,self.yaw_change_rate), #"Yaw right"
-                'up':(0,self.pitch_change_rate,0,0), #"Pitch up"
-                'down':(0,self.pitch_change_rate,0,0), #"Pitch down"
-                'left':(self.roll_change_rate,0,0,0), #"Roll Left"
-                'right':(self.roll_change_rate,0,0,0), #"Roll right"
-        }
+        
                          #Min, Max, Default
         self.Roll =      [1000,2001,1500]
         self.Pitch =     [1000,2001,1500]
