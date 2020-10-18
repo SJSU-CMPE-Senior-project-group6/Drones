@@ -62,7 +62,7 @@ class Accel_Publisher(object):
         #Mode channel[4:5]
         self.Mode1 = [1200,1000] #Stable
         self.Mode2 = [1300,1500] #AltHold
-        self.Mode3 = [1400,2000] #Land
+        self.Mode3 = [1400,2000] #Land 30cm/s descends
 
         #Channel defalut channel[0:3]
         self.channel = [1500,1500,1030,1500,1200,1000,1500,1500] #defalut mode is mode#1: Stabilize
@@ -169,6 +169,7 @@ class Accel_Publisher(object):
                         self.RC_data.channels = self.channel
                         self.pub.publish(self.RC_data)
                         time.sleep(3) #need at least 3 second
+                        self.pub.publish(self.RC_data)
                         self.set_default_channel() #restore back default state
                         self.launch_status = True
 
