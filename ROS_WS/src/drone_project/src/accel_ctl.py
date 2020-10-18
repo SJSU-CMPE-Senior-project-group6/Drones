@@ -48,10 +48,10 @@ class Accel_Publisher(object):
                 's':(0,0,self.dec_rate,0), #"Throttle down"
                 'a':(0,0,0,self.dec_rate), #"Yawl left"
                 'd':(0,0,0,self.inc_rate), #"Yawl right"
-                '\x1b[A':(0,self.dec_rate,0,0), #"Pitch up"
-                '\x1b[B':(0,self.inc_rate,0,0), #"Pitch down"
-                '\x1b[D':(self.dec_rate,0,0,0), #"Roll Left"
-                '\x1b[C':(self.inc_rate,0,0,0), #"Roll right"
+                'up':(0,self.dec_rate,0,0), #"Pitch up"
+                'down':(0,self.inc_rate,0,0), #"Pitch down"
+                'left':(self.dec_rate,0,0,0), #"Roll Left"
+                'right':(self.inc_rate,0,0,0), #"Roll right"
         }
                          #Min, Max, Default
         self.Roll =      [1000,2001,1500]
@@ -74,7 +74,7 @@ class Accel_Publisher(object):
         self.altitude_data = 0
         self.target_hight = 1.1 # wanted 1.5
         self.launch_status = False
-        self.key = 'z'
+        self.key = 'q'
 
         # locker for thread safe
         # self.lock = threading.Lock()
