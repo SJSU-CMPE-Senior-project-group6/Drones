@@ -78,7 +78,7 @@ class Accel_Publisher(object):
         self.init_altitude = 0.0
         self.set_init_altitude = False
         self.target_hight = 0 
-        self.target_hight_offset = 1.1 # wanted 1.5
+        self.target_hight_offset = 0 # wanted 1.5
         self.launch_status = False
         self.key = 'q'
 
