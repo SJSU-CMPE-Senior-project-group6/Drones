@@ -162,9 +162,9 @@ class Accel_Publisher(object):
 
     def callback(self, msgs):        
         self.altitude_data = msgs.data
+
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
-
         if self.set_init_altitude == False:
             self.init_altitude = self.altitude_data
             self.set_init_altitude = True
@@ -175,7 +175,7 @@ class Accel_Publisher(object):
             try:
                 current_error = self.target_hight - self.altitude_data
                 self.throttle_change_rate = self.pid_control(current_error, 3, 0.001, 2)
-                print("change rate: ",self.throttle_change_rate)
+                print("change rate: ",self.throttle_change_rate, "error: ",current_error)
                 
                 # self.pitch_change_rate = self.pid_control(current_error, 4, 0.001, 5)
                 # self.yaw_change_rate = self.pid_control(current_error, 4, 0.001, 5)
