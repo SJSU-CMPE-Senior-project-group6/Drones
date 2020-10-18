@@ -72,6 +72,8 @@ class Accel_Publisher(object):
         self.Land = [1500,1500,1030,1000]
 
         self.altitude_data = 0
+        self.init_altitude = 0.0
+        self.set_init_altitude = False
         self.target_hight = 1.1 # wanted 1.5
         self.launch_status = False
         self.key = 'q'
@@ -137,58 +139,66 @@ class Accel_Publisher(object):
         self.altitude_data = msgs.data
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
-        try:
-            # self.key = raw_input("Enter your command\n")       
-            # print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
-            if self.altitude_data < self.target_hight:
-                self.key = 'w'
-            else:
-                self.key = 's'
-            if self.key in self.moveBindings.keys():
-                self.channel[0] = self.channel[0] + self.moveBindings[self.key][0]
-                self.channel[1] = self.channel[1] + self.moveBindings[self.key][1]
-                self.channel[2] = self.channel[2] + self.moveBindings[self.key][2]
-                self.channel[3] = self.channel[3] + self.moveBindings[self.key][3]
-                self.check_channel_boundary() #check range of the channel not be exceed
-                print("get: ",self.key)
-    
-            elif self.key is 'q' or self.key is 'e': #take off or land
-                if self.key is 'q': #take off
-                    self.takeoff_command()
-                    print("Takeoff: ",self.channel)
-                    self.RC_data.channels = self.channel
-                    self.pub.publish(self.RC_data)
-                    time.sleep(3) #need at least 3 second
-                    self.set_default_channel() #restore back default state
-                    self.launch_status = True
 
-                else: #land
-                    self.land_command()
-                    print("Land: ",self.channel)
-                    self.RC_data.channels = self.channel
-                    self.pub.publish(self.RC_data)
-                    time.sleep(3) #need at least 3 second
-                    self.set_default_channel() #restore back default state
-                    self.launch_status = False
-            
-            elif self.key is 'z': #reset channel
-                print("get: ",self.key)
-                self.set_default_channel()
+        if self.set_init_altitude == False:
+            self.init_altitude = self.altitude_data
+            self.set_init_altitude = True
+            print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
+        
+        if self.set_init_altitude == True:
+            try:
+                # self.key = raw_input("Enter your command\n")       
+                if self.altitude_data < self.target_hight:
+                    self.key = 'w'
+                else:
+                    self.key = 's'
+                if self.key in self.moveBindings.keys():
+                    self.channel[0] = self.channel[0] + self.moveBindings[self.key][0]
+                    self.channel[1] = self.channel[1] + self.moveBindings[self.key][1]
+                    self.channel[2] = self.channel[2] + self.moveBindings[self.key][2]
+                    self.channel[3] = self.channel[3] + self.moveBindings[self.key][3]
+                    self.check_channel_boundary() #check range of the channel not be exceed
+                    print("get: ",self.key)
+        
+                elif self.key is 'q' or self.key is 'e': #take off or land
+                    if self.key is 'q': #take off
+                        self.takeoff_command()
+                        print("Takeoff: ",self.channel)
+                        self.RC_data.channels = self.channel
+                        self.pub.publish(self.RC_data)
+                        time.sleep(3) #need at least 3 second
+                        self.set_default_channel() #restore back default state
+                        self.launch_status = True
 
-            else:
-                print("Not a command: ",self.key,"\n")
+                    else: #land
+                        self.land_command()
+                        print("Land: ",self.channel)
+                        self.RC_data.channels = self.channel
+                        self.pub.publish(self.RC_data)
+                        time.sleep(3) #need at least 3 second
+                        self.set_default_channel() #restore back default state
+                        self.launch_status = False
+                
+                elif self.key is 'z': #reset channel
+                    print("get: ",self.key)
+                    self.set_default_channel()
 
-            print(self.channel)
-            self.RC_data.channels = self.channel
-            self.pub.publish(self.RC_data)
-        except Exception as e:
-            print(e)
+                else:
+                    print("Not a command: ",self.key,"\n")
 
-        finally:
-            pass
-            # self.set_default_channel()
-            # self.RC_data.channels = self.channel
-            # self.pub.publish(self.RC_data)
+                print(self.channel)
+                self.RC_data.channels = self.channel
+                self.pub.publish(self.RC_data)
+            except Exception as e:
+                print(e)
+
+            finally:
+                pass
+                # self.set_default_channel()
+                # self.RC_data.channels = self.channel
+                # self.pub.publish(self.RC_data)
+         else:
+             print("Initial altitude hight not set")
 
 if __name__=="__main__":  
     flight_rc_ctl = Accel_Publisher()
