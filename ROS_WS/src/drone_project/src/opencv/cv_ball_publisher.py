@@ -18,6 +18,7 @@ camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(640, 480))
 # allow the camera to warmup
 time.sleep(0.1)
+print("ball_command published")
 # capture frames from the camera
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 	# grab the raw NumPy array representing the image, then initialize the timestamp
@@ -45,7 +46,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		(x, y, w, h) = cv2.boundingRect(cnt)
 
 		str_send += str(x)+","+str(y)+","+str(w)+","+str(h)+"," 		
-		print(str_send)
+		#print(str_send)
 		pub.publish(str_send)
 
 		x_medium = int((x + x + w) / 2 )
@@ -53,8 +54,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	cv2.line(image, (x_medium, 0), (x_medium, 480), (0, 255, 0), 2)
 
 	# show the frame
-	cv2.imshow("Frame", image)
-	#cv2.imshow("mask", red_mask)
+	#cv2.imshow("Frame", image)
+	cv2.imshow("mask", red_mask)
 	key = cv2.waitKey(1) & 0xFF
 	# clear the stream in preparation for the next frame
 	rawCapture.truncate(0)
