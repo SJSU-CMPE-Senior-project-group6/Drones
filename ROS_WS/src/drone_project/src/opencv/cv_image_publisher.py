@@ -37,18 +37,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		print(str_send)
 		pub.publish(str_send)
 		
-		#image = cv2.rectangle(image, (x,y), (x+w,y+h), (0,255,0), 3)
-		#cv2.putText(image, 'face', (x, y),
-			#cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2)        
+		image = cv2.rectangle(image, (x,y), (x+w,y+h), (0,255,0), 3)
+		cv2.putText(image, 'face', (x, y),
+			cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2)        
 		#print(x," ",y," ",w," ",h)	
 
 	# show the frame
-	#cv2.imshow("Frame", image)
-	#key = cv2.waitKey(1) & 0xFF
+	cv2.imshow("Frame", image)
+	key = cv2.waitKey(1) & 0xFF
 	# clear the stream in preparation for the next frame
 	rawCapture.truncate(0)
 
 
 	#if the `q` key was pressed, break from the loop
-	#if key == ord("q"):
-	#	break
+	if key == ord("q"):
+		break
