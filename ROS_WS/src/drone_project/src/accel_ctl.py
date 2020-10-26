@@ -91,7 +91,7 @@ class Accel_Publisher(object):
         self.pub.publish(self.RC_data)
         
         self.listener()
-        rospy.Rate(1)
+        rospy.Rate(1000)
         rospy.spin()
 
     def pid_control(self, current_error, Kp, Ki, Kd):
