@@ -256,20 +256,25 @@ class Accel_Publisher(object):
         '''
         #for yaw
         if self.command[0] < 0:
-            self.target_yaw = self.Yaw[0]
+            self.target_yaw = self.Yaw[0] #1300
         elif self.command[0] == 0:
-            self.target_yaw = self.Yaw[2]
+            self.target_yaw = self.Yaw[2] #1500
         else:
-            self.target_yaw = self.Yaw[1]
+            self.target_yaw = self.Yaw[1] #1700
         
         #for pitch
         if self.command[2] < 0:
-            self.target_pitch = self.Pitch[1]
+            self.target_pitch = self.Pitch[1] #1600
         elif self.command[2] == 0:
-            self.target_pitch = self.Pitch[2]
+            self.target_pitch = self.Pitch[2] #1500
         else:
-            self.target_pitch = self.Pitch[0]
+            self.target_pitch = self.Pitch[0] #1400
 
+        #                  #Min, Max, Default
+        # self.Roll =      [1000,2001,1500]
+        # self.Pitch =     [1400,1600,1500] #[1000,2001,1500]
+        # self.Throttle =  [1019,2001,1030]
+        # self.Yaw =       [1300,1700,1500] #[1000,2001,1500]
 if __name__=="__main__":  
     flight_rc_ctl = Accel_Publisher()
 
