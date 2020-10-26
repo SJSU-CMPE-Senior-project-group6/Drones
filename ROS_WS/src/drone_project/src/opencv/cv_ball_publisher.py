@@ -34,7 +34,7 @@ class ball_recognition:
 			# and occupied/unoccupied text
 
 			image = frame.array	
-			ksize = (5,5)
+			ksize = (6,6)
 			image = cv2.blur(image,ksize)
 			cols = len(image[0])
 			rows = len(image)	
