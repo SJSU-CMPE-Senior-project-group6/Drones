@@ -83,6 +83,9 @@ class Accel_Publisher(object):
         # locker for thread safe
         # self.lock = threading.Lock()
 
+        #for command 
+        self.command = [0.0, 0.0, 0.0]
+
         print(self.msg_info)
         rospy.init_node('Override_RCIn_by_keyboard')
         self.pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
@@ -152,43 +155,32 @@ class Accel_Publisher(object):
         self.channel[:4] = self.Take_off
 
     def listener(self):
-        rospy.Subscriber("/mavros/global_position/rel_alt",Float64,self.callback)
-
-    # def setup_threads(self):
-    #     accel_ctl_thread = threading.Thread(target=self.accel_callback)
-    #     accel_ctl_thread.daemon = False
-        
-    #     list_thread = [
-    #         accel_ctl_thread]
-    #     for thread in list_thread:
-    #         thread.start()
-    #         thread.join()
-    
-    #     print("Thread starts!")
+        rospy.Subscriber("/mavros/global_position/rel_alt",Float64,self.altitude_callback)
+        rospy.Subscriber("/cv_command",Twist,self.command_callback)
 
     def accel_callback(self):
         if self.set_init_altitude == True:
             try:
                 current_error = self.target_hight - self.altitude_data
                 self.throttle_change_rate = self.pid_control(current_error, 10, 0.001, 2)
-                #print("change rate: ",round(self.throttle_change_rate,2), "error: ",round(current_error,2))
+                print("change rate: ",round(self.throttle_change_rate,2), "error: ",round(current_error,2))
                 
                 # self.pitch_change_rate = self.pid_control(current_error, 4, 0.001, 5)
                 # self.yaw_change_rate = self.pid_control(current_error, 4, 0.001, 5)
                 # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
 
-                if self.launch_status == True:
-                    if self.throttle_change_rate > 0:
-                        self.key = 'w'
-                    else:
-                        self.key = 's'
+                # if self.launch_status == True:
+                #     if self.throttle_change_rate > 0:
+                #         self.key = 'w'
+                #     else:
+                #         self.key = 's'
 
                 self.channel[0] += int(self.roll_change_rate)
                 self.channel[1] += int(self.pitch_change_rate)
                 self.channel[2] += int(self.throttle_change_rate)
                 self.channel[3] += int(self.yaw_change_rate)
                 self.check_channel_boundary() #check range of the channel not be exceed
-                print("get: ",self.key)
+                #print("get: ",self.key)
         
                 if self.key is 'q' or self.key is 'e': #take off or land
                     if self.key is 'q': #take off
@@ -228,7 +220,7 @@ class Accel_Publisher(object):
         else:
             print("Initial altitude data is not set")
 
-    def callback(self, msgs):        
+    def altitude_callback(self, msgs):        
         self.altitude_data = msgs.data
         if self.set_init_altitude == False:
             self.init_altitude = self.altitude_data
@@ -237,6 +229,12 @@ class Accel_Publisher(object):
             print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
         self.accel_callback()
 
+    def command_callback(self, msgs):
+        self.command[0] = msgs.linear.x
+        self.command[1] = msgs.linear.y
+        self.command[2] = msgs.linear.z
+        print("Command: ", self.command)
+        
 if __name__=="__main__":  
     flight_rc_ctl = Accel_Publisher()
 
