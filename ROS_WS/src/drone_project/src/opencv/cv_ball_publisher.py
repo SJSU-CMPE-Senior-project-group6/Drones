@@ -2,8 +2,6 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
-from cv_bridge import CvBridge, CvBridgeError
-from sensor_msgs.msg import Image
 import rospy
 import time
 import cv2
@@ -18,22 +16,23 @@ class ball_recognition:
 		self.frame_w = 640
 		self.frame_h = 480
 		self.angle_per_pixel = 90.0/self.frame_w
-		# initialize the camera and grab a reference to the raw camera capture
-		self.camera = PiCamera()
-		self.camera.resolution = (self.frame_w, self.frame_h)
-		self.camera.framerate = 32
 		self.ball_diameter = 13.0
-		self.rawCapture = PiRGBArray(self.camera, size=(self.frame_w, self.frame_h))
-		self.twist= Twist()
-		# allow the camera to warmup
-		time.sleep(0.1)
-		print("ball_command published")
+		self.twist = Twist()
+		print("ball_command publisher starts")
 
 	def camera_publisher(self):
+		# initialize the camera and grab a reference to the raw camera capture
+		camera = PiCamera()
+		camera.resolution = (640, 480)
+		camera.framerate = 32
+		rawCapture = PiRGBArray(camera, size=(640, 480))
+		# allow the camera to warmup
+		time.sleep(0.1)
 		# capture frames from the camera
-		for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
+		for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 			# grab the raw NumPy array representing the image, then initialize the timestamp
 			# and occupied/unoccupied text
+
 			image = frame.array	
 			ksize = (5,5)
 			image = cv2.blur(image,ksize)
@@ -82,17 +81,16 @@ class ball_recognition:
 			cv2.line(image, (int(center_x), 0), (int(center_x), 480), (255, 0, 0), 2)
 
 			# show the frame
-			#cv2.imshow("Frame", image)
+			cv2.imshow("Frame", image)
 			#cv2.imshow("mask", red_mask)
-			#cv2.imshow("hsv",hsv_frame)
-			#key = cv2.waitKey(1) & 0xFF
+			key = cv2.waitKey(1) & 0xFF
 			# clear the stream in preparation for the next frame
-			#self.rawCapture.truncate(0)
+			rawCapture.truncate(0)
 
 
-			#if the `q` key was pressed, break from the loop
-			#if key == ord("q"):
-				#break
+			# if the `q` key was pressed, break from the loop
+			if key == ord("q"):
+				break
 
 if __name__ == "__main__":
 	image_pub = ball_recognition()

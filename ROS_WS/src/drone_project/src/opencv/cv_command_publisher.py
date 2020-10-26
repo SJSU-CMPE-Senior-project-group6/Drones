@@ -12,6 +12,7 @@ class image_info:
 		self.center_horizontal_deg = [-5,5]
 		self.center_vertical_deg = [-5,5]
 		self.ball_distance_cm = [150,200]
+		self.ball_center_ptr = self.ball_distance_cm[0] + (self.ball_distance_cm[1] - self.ball_distance_cm[0])/2
 		self.twist = Twist()
 		rospy.spin()
 
@@ -22,7 +23,7 @@ class image_info:
 		if x == 1024 and y == 1024 and z == 1024: #get error code, not thing input
 			x = 0
 			y = 0
-			z = 0
+			z = self.ball_center_ptr
 			
 		if x < self.center_horizontal_deg[0]:
 			pass 
@@ -39,9 +40,9 @@ class image_info:
 			y = 0
 
 		if z < self.ball_distance_cm[0]:
-			pass
+			z = z - self.ball_center_ptr
 		elif z > self.ball_distance_cm[1]:
-			pass
+			z = z - self.ball_center_ptr
 		else:
 			z = 0
 

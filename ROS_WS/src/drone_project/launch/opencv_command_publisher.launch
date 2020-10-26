@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <!--arguement-->
+    
+    <!--Publisher Node-->
+    <node pkg="drone_project" name="cv_ball_pub" output="screen" type="cv_ball_publisher.py">
+    </node>
+
+    <node pkg="drone_project" name="cv_command_pub" output="screen" type="cv_command_publisher.py">
+    </node>
+
+</launch>
