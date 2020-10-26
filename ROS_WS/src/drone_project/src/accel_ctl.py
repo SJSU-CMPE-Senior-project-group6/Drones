@@ -2,6 +2,7 @@ import rospy
 import time
 from mavros_msgs.msg import OverrideRCIn
 from std_msgs.msg import Float64
+from geometry_msgs.msg import Twist
 import threading
 
 """
@@ -234,7 +235,7 @@ class Accel_Publisher(object):
         self.command[1] = msgs.linear.y
         self.command[2] = msgs.linear.z
         print("Command: ", self.command)
-        
+
 if __name__=="__main__":  
     flight_rc_ctl = Accel_Publisher()
 
