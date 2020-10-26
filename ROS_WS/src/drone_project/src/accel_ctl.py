@@ -167,15 +167,15 @@ class Accel_Publisher(object):
                 throttle_error = self.target_hight - self.altitude_data
                 yaw_error = self.target_yaw - self.channel[3]
                 pitch_error = self.target_pitch - self.channel[1]
-
+                print("yaw: ",self.target_yaw, "pitch: ",self.target_pitch)
                 self.throttle_change_rate = self.pid_control(throttle_error, 10, 0.001, 2)
                 self.yaw_change_rate = self.pid_control(yaw_error, 4, 0.001, 5)
                 self.pitch_change_rate = self.pid_control(pitch_error, 4, 0.001, 5)
                 # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
 
-                print("throttle rate: ",round(self.throttle_change_rate,2), "error: ",round(throttle_error,2))
-                print("yaw rate: ",round(self.throttle_change_rate,2), "error: ",round(yaw_error,2))
-                print("pitch rate: ",round(self.throttle_change_rate,2), "error: ",round(pitch_error,2))
+                #print("throttle rate: ",round(self.throttle_change_rate,2), "error: ",round(throttle_error,2))
+                #print("yaw rate: ",round(self.throttle_change_rate,2), "error: ",round(yaw_error,2))
+                #print("pitch rate: ",round(self.throttle_change_rate,2), "error: ",round(pitch_error,2))
 
                 if self.launch_status == True:
                     if self.throttle_change_rate > 0:
