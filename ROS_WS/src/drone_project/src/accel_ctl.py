@@ -88,7 +88,6 @@ class Accel_Publisher(object):
         self.pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
         self.RC_data = OverrideRCIn()
         self.listener()
-        self.setup_threads()
         # rospy.Rate(1000)
         rospy.spin()
 
@@ -150,6 +149,7 @@ class Accel_Publisher(object):
         self.channel[:4] = self.Take_off
 
     def listener(self):
+        self.setup_threads()
         rospy.Subscriber("/mavros/global_position/rel_alt",Float64,self.callback)
 
     def setup_threads(self):
