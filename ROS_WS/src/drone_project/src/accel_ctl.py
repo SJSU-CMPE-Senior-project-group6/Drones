@@ -231,6 +231,7 @@ class Accel_Publisher(object):
                     # self.pub.publish(self.RC_data)
             else:
                 print("Initial altitude data is not set")
+                time.sleep(1)
 
     def callback(self, msgs):        
         self.altitude_data = msgs.data
