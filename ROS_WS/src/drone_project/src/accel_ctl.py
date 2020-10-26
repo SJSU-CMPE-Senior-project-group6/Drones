@@ -82,6 +82,8 @@ class Accel_Publisher(object):
 
         # locker for thread safe
         # self.lock = threading.Lock()
+        self.setup_threads()
+
         print(self.msg_info)
         rospy.init_node('Override_RCIn_by_keyboard')
         self.pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
@@ -150,19 +152,24 @@ class Accel_Publisher(object):
     def listener(self):
         rospy.Subscriber("/mavros/global_position/rel_alt",Float64,self.callback)
 
-    def callback(self, msgs):        
-        self.altitude_data = msgs.data
+    def setup_threads(self):
+        accel_ctl_thread = threading.Thread(target=self.accel_callback)
+        accel_ctl_thread.daemon = False
+        
+        list_thread = [
+            accel_ctl_thread]
+        for thread in list_thread:
+            thread.start()
+    
+        print("Thread starts!")
 
+    def accel_callback(self):
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
-        if self.set_init_altitude == False:
-            self.init_altitude = self.altitude_data
-            self.set_init_altitude = True
-            self.target_hight = self.target_hight_offset + self.init_altitude
-            print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
-        
-        if self.set_init_altitude == True:
+
+        while self.set_init_altitude == True:
             try:
+                print("accl get alt: ",self.altitude_data)
                 current_error = self.target_hight - self.altitude_data
                 self.throttle_change_rate = self.pid_control(current_error, 10, 0.001, 2)
                 print("change rate: ",round(self.throttle_change_rate,2), "error: ",round(current_error,2))
@@ -219,8 +226,16 @@ class Accel_Publisher(object):
                 # self.set_default_channel()
                 # self.RC_data.channels = self.channel
                 # self.pub.publish(self.RC_data)
-        else:
-             print("Initial altitude hight not set")
+
+    def callback(self, msgs):        
+        self.altitude_data = msgs.data
+        print("alt callback: ",self.altitude_data)
+        if self.set_init_altitude == False:
+            self.init_altitude = self.altitude_data
+            self.set_init_altitude = True
+            self.target_hight = self.target_hight_offset + self.init_altitude
+            print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
+        
 
 if __name__=="__main__":  
     flight_rc_ctl = Accel_Publisher()
