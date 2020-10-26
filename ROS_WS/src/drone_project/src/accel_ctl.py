@@ -167,7 +167,7 @@ class Accel_Publisher(object):
     def accel_callback(self):
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
-
+        print("get into accel callback")
         while self.set_init_altitude == True:
             try:
                 print("accl get alt: ",self.altitude_data)
