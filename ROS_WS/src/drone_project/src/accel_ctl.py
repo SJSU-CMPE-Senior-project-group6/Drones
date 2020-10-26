@@ -82,13 +82,13 @@ class Accel_Publisher(object):
 
         # locker for thread safe
         # self.lock = threading.Lock()
-        self.setup_threads()
 
         print(self.msg_info)
         rospy.init_node('Override_RCIn_by_keyboard')
         self.pub = rospy.Publisher("/mavros/rc/override",OverrideRCIn, queue_size = 10)
         self.RC_data = OverrideRCIn()
         self.listener()
+        self.setup_threads()
         # rospy.Rate(1000)
         rospy.spin()
 
