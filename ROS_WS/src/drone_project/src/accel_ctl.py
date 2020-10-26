@@ -91,7 +91,7 @@ class Accel_Publisher(object):
         self.pub.publish(self.RC_data)
         
         self.listener()
-        # rospy.Rate(1000)
+        rospy.Rate(1)
         rospy.spin()
 
     def pid_control(self, current_error, Kp, Ki, Kd):
@@ -169,10 +169,9 @@ class Accel_Publisher(object):
     def accel_callback(self):
         if self.set_init_altitude == True:
             try:
-                print("accl get alt: ",self.altitude_data)
                 current_error = self.target_hight - self.altitude_data
                 self.throttle_change_rate = self.pid_control(current_error, 10, 0.001, 2)
-                print("change rate: ",round(self.throttle_change_rate,2), "error: ",round(current_error,2))
+                #print("change rate: ",round(self.throttle_change_rate,2), "error: ",round(current_error,2))
                 
                 # self.pitch_change_rate = self.pid_control(current_error, 4, 0.001, 5)
                 # self.yaw_change_rate = self.pid_control(current_error, 4, 0.001, 5)
