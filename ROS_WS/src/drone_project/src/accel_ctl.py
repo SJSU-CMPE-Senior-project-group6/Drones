@@ -156,8 +156,8 @@ class Accel_Publisher(object):
         self.channel[:4] = self.Take_off
 
     def listener(self):
-        rospy.Subscriber("/mavros/global_position/rel_alt",Float64,self.altitude_callback)
         rospy.Subscriber("/cv_command",Twist,self.command_callback)
+        rospy.Subscriber("/mavros/global_position/rel_alt",Float64,self.altitude_callback)
 
     def accel_callback(self):
         if self.set_init_altitude == True:
