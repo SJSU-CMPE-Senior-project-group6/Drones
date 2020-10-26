@@ -160,6 +160,7 @@ class Accel_Publisher(object):
             accel_ctl_thread]
         for thread in list_thread:
             thread.start()
+            thread.join()
     
         print("Thread starts!")
 
