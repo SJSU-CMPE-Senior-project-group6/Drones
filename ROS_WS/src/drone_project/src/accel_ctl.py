@@ -255,9 +255,9 @@ class Accel_Publisher(object):
         z > 0: pitch down --
         '''
         #for yaw
-        if self.command[1] < 0:
+        if self.command[0] < 0:
             self.target_yaw = self.Yaw[0]
-        elif self.command[1] == 0:
+        elif self.command[0] == 0:
             self.target_yaw = self.Yaw[2]
         else:
             self.target_yaw = self.Yaw[1]
