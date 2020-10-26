@@ -168,65 +168,69 @@ class Accel_Publisher(object):
         self.RC_data.channels = self.channel #set default
         self.pub.publish(self.RC_data)
         print("get into accel callback")
-        while self.set_init_altitude == True:
-            try:
-                print("accl get alt: ",self.altitude_data)
-                current_error = self.target_hight - self.altitude_data
-                self.throttle_change_rate = self.pid_control(current_error, 10, 0.001, 2)
-                print("change rate: ",round(self.throttle_change_rate,2), "error: ",round(current_error,2))
-                
-                # self.pitch_change_rate = self.pid_control(current_error, 4, 0.001, 5)
-                # self.yaw_change_rate = self.pid_control(current_error, 4, 0.001, 5)
-                # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
+        while True:
+            print("accel alt status:", self.set_init_altitude)
+            if self.set_init_altitude == True:
+                try:
+                    print("accl get alt: ",self.altitude_data)
+                    current_error = self.target_hight - self.altitude_data
+                    self.throttle_change_rate = self.pid_control(current_error, 10, 0.001, 2)
+                    print("change rate: ",round(self.throttle_change_rate,2), "error: ",round(current_error,2))
+                    
+                    # self.pitch_change_rate = self.pid_control(current_error, 4, 0.001, 5)
+                    # self.yaw_change_rate = self.pid_control(current_error, 4, 0.001, 5)
+                    # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
 
-                if self.launch_status == True:
-                    if self.throttle_change_rate > 0:
-                        self.key = 'w'
-                    else:
-                        self.key = 's'
+                    if self.launch_status == True:
+                        if self.throttle_change_rate > 0:
+                            self.key = 'w'
+                        else:
+                            self.key = 's'
 
-                self.channel[0] += int(self.roll_change_rate)
-                self.channel[1] += int(self.pitch_change_rate)
-                self.channel[2] += int(self.throttle_change_rate)
-                self.channel[3] += int(self.yaw_change_rate)
-                self.check_channel_boundary() #check range of the channel not be exceed
-                print("get: ",self.key)
-        
-                if self.key is 'q' or self.key is 'e': #take off or land
-                    if self.key is 'q': #take off
-                        self.takeoff_command()
-                        print("Takeoff: ",self.channel)
-                        self.RC_data.channels = self.channel
-                        self.pub.publish(self.RC_data)
-                        time.sleep(3) #need at least 3 second
-                        self.pub.publish(self.RC_data)
-                        self.set_default_channel() #restore back default state
-                        self.launch_status = True
-
-                    else: #land
-                        self.land_command()
-                        print("Land: ",self.channel)
-                        self.RC_data.channels = self.channel
-                        self.pub.publish(self.RC_data)
-                        time.sleep(3) #need at least 3 second
-                        self.set_default_channel() #restore back default state
-                        self.launch_status = False
-                
-                elif self.key is 'z': #reset channel
+                    self.channel[0] += int(self.roll_change_rate)
+                    self.channel[1] += int(self.pitch_change_rate)
+                    self.channel[2] += int(self.throttle_change_rate)
+                    self.channel[3] += int(self.yaw_change_rate)
+                    self.check_channel_boundary() #check range of the channel not be exceed
                     print("get: ",self.key)
-                    self.set_default_channel()
+            
+                    if self.key is 'q' or self.key is 'e': #take off or land
+                        if self.key is 'q': #take off
+                            self.takeoff_command()
+                            print("Takeoff: ",self.channel)
+                            self.RC_data.channels = self.channel
+                            self.pub.publish(self.RC_data)
+                            time.sleep(3) #need at least 3 second
+                            self.pub.publish(self.RC_data)
+                            self.set_default_channel() #restore back default state
+                            self.launch_status = True
 
-                print(self.channel)
-                self.RC_data.channels = self.channel
-                self.pub.publish(self.RC_data)
-            except Exception as e:
-                print(e)
+                        else: #land
+                            self.land_command()
+                            print("Land: ",self.channel)
+                            self.RC_data.channels = self.channel
+                            self.pub.publish(self.RC_data)
+                            time.sleep(3) #need at least 3 second
+                            self.set_default_channel() #restore back default state
+                            self.launch_status = False
+                    
+                    elif self.key is 'z': #reset channel
+                        print("get: ",self.key)
+                        self.set_default_channel()
 
-            finally:
-                pass
-                # self.set_default_channel()
-                # self.RC_data.channels = self.channel
-                # self.pub.publish(self.RC_data)
+                    print(self.channel)
+                    self.RC_data.channels = self.channel
+                    self.pub.publish(self.RC_data)
+                except Exception as e:
+                    print(e)
+
+                finally:
+                    pass
+                    # self.set_default_channel()
+                    # self.RC_data.channels = self.channel
+                    # self.pub.publish(self.RC_data)
+            else:
+                print("Initial altitude data is not set")
 
     def callback(self, msgs):        
         self.altitude_data = msgs.data
