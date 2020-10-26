@@ -47,11 +47,13 @@ class Accel_Publisher(object):
         self.yaw_change_rate = 0
         self.roll_change_rate = 0
         
+        self.target_yaw = 0
+        self.target_pitch = 0
                          #Min, Max, Default
         self.Roll =      [1000,2001,1500]
-        self.Pitch =     [1000,2001,1500]
+        self.Pitch =     [1400,1600,1500] #[1000,2001,1500]
         self.Throttle =  [1019,2001,1030]
-        self.Yaw =      [1000,2001,1500]
+        self.Yaw =       [1300,1700,1500] #[1000,2001,1500]
 
         #Mode channel[4:5]
         self.Mode1 = [1200,1000] #Stable
@@ -162,19 +164,24 @@ class Accel_Publisher(object):
     def accel_callback(self):
         if self.set_init_altitude == True:
             try:
-                current_error = self.target_hight - self.altitude_data
-                self.throttle_change_rate = self.pid_control(current_error, 10, 0.001, 2)
-                print("change rate: ",round(self.throttle_change_rate,2), "error: ",round(current_error,2))
-                
-                # self.pitch_change_rate = self.pid_control(current_error, 4, 0.001, 5)
-                # self.yaw_change_rate = self.pid_control(current_error, 4, 0.001, 5)
+                throttle_error = self.target_hight - self.altitude_data
+                yaw_error = self.target_yaw - self.channel[3]
+                pitch_error = self.target_pitch - self.channel[1]
+
+                self.throttle_change_rate = self.pid_control(throttle_error, 10, 0.001, 2)
+                self.yaw_change_rate = self.pid_control(yaw_error, 4, 0.001, 5)
+                self.pitch_change_rate = self.pid_control(pitch_error, 4, 0.001, 5)
                 # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
 
-                # if self.launch_status == True:
-                #     if self.throttle_change_rate > 0:
-                #         self.key = 'w'
-                #     else:
-                #         self.key = 's'
+                print("throttle rate: ",round(self.throttle_change_rate,2), "error: ",round(throttle_error,2))
+                print("yaw rate: ",round(self.throttle_change_rate,2), "error: ",round(yaw_error,2))
+                print("pitch rate: ",round(self.throttle_change_rate,2), "error: ",round(pitch_error,2))
+
+                if self.launch_status == True:
+                    if self.throttle_change_rate > 0:
+                        self.key = 'w'
+                    else:
+                        self.key = 's'
 
                 self.channel[0] += int(self.roll_change_rate)
                 self.channel[1] += int(self.pitch_change_rate)
@@ -234,7 +241,34 @@ class Accel_Publisher(object):
         self.command[0] = msgs.linear.x
         self.command[1] = msgs.linear.y
         self.command[2] = msgs.linear.z
-        print("Command: ", self.command)
+        '''
+        x < 0: yaw need to turn left --
+        x = 0: yaw no change
+        x > 0: yaw need to turn right ++
+
+        y < 0: throttle need to go down --
+        y = 0: throttle no change
+        y > 0: throttle need to go up ++
+
+        z < 0: pitch up ++
+        z = 0: pitch no change
+        z > 0: pitch down --
+        '''
+        #for yaw
+        if command[1] < 0:
+            self.target_yaw = self.Yaw[0]
+        elif command[1] == 0:
+            self.target_yaw = self.Yaw[2]
+        else:
+            self.target_yaw = self.Yaw[1]
+        
+        #for pitch
+        if command[2] < 0:
+            self.target_pitch = self.Pitch[1]
+        elif command[2] == 0:
+            self.target_pitch = self.Pitch[2]
+        else:
+            self.target_pitch = self.Pitch[0]
 
 if __name__=="__main__":  
     flight_rc_ctl = Accel_Publisher()
