@@ -174,8 +174,8 @@ class Accel_Publisher(object):
                 # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
 
                 #print("throttle rate: ",round(self.throttle_change_rate,2), "error: ",round(throttle_error,2))
-                print("yaw rate: ",round(self.yaw_change_rate,2), "error: ",round(yaw_error,2))
-                #print("pitch rate: ",round(self.throttle_change_rate,2), "error: ",round(pitch_error,2))
+                #print("yaw rate: ",round(self.yaw_change_rate,2), "error: ",round(yaw_error,2))
+                print("pitch rate: ",round(self.pitch_change_rate,2), "error: ",round(pitch_error,2))
 
                 if self.launch_status == True:
                     if self.throttle_change_rate > 0:
