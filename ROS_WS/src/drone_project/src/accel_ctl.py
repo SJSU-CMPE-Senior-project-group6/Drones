@@ -167,7 +167,7 @@ class Accel_Publisher(object):
                 throttle_error = self.target_hight - self.altitude_data
                 yaw_error = self.target_yaw - self.channel[3]
                 pitch_error = self.target_pitch - self.channel[1]
-                print("yaw: ",self.target_yaw, "pitch: ",self.target_pitch)
+                print("pitch:",self.target_pitch, "yaw:",self.target_yaw)
                 self.throttle_change_rate = self.pid_control(throttle_error, 10, 0.001, 2)
                 self.yaw_change_rate = self.pid_control(yaw_error, 2, 0.001, 5)
                 self.pitch_change_rate = self.pid_control(pitch_error, 4, 0.001, 5)
