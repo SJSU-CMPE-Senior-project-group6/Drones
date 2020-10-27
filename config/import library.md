@@ -18,3 +18,6 @@ __cv2__
 >`sudo apt-get install libraspberrypi-dev`  
 >`sudo pip install picamera`  
 >[download haarcascade_frontalface_default.xml](https://github.com/opencv/opencv/tree/master/data/haarcascades)  
+
+#Jetson nano
+> Wifi driver setup for Intel AX200: [references URL](https://wifi.hypergeek.net/you-too-can-have-a-sub-200-11ax-client/)
