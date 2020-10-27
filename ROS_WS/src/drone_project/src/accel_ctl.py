@@ -231,7 +231,7 @@ class Accel_Publisher(object):
             print("Initial altitude data is not set")
 
     def altitude_callback(self, msgs):
-        count_time = 5        
+        count_time = 2        
         self.altitude_data = msgs.data
         if self.set_init_altitude == False:
             self.init_altitude = self.altitude_data
