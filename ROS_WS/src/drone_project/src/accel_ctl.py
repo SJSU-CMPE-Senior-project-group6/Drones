@@ -173,7 +173,7 @@ class Accel_Publisher(object):
                 self.pitch_change_rate = self.pid_control(pitch_error, 4, 0.001, 5)
                 # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
 
-                #print("throttle rate: ",round(self.throttle_change_rate,2), "error: ",round(throttle_error,2))
+                print("throttle rate: ",round(self.throttle_change_rate,2), "error: ",round(throttle_error,2))
                 #print("yaw rate: ",round(self.throttle_change_rate,2), "error: ",round(yaw_error,2))
                 #print("pitch rate: ",round(self.throttle_change_rate,2), "error: ",round(pitch_error,2))
 
