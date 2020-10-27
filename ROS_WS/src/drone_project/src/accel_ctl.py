@@ -70,6 +70,8 @@ class Accel_Publisher(object):
         self.altitude_data = 0
         self.init_altitude = 0.0
         self.set_init_altitude = False
+        self.alti_data_counter = 0
+        self.alti_total_data = 0
         self.target_hight = 0 
         self.target_hight_offset = 0 # wanted 1.5
         self.launch_status = False
@@ -228,14 +230,20 @@ class Accel_Publisher(object):
         else:
             print("Initial altitude data is not set")
 
-    def altitude_callback(self, msgs):        
+    def altitude_callback(self, msgs):
+        count_time = 5        
         self.altitude_data = msgs.data
         if self.set_init_altitude == False:
             self.init_altitude = self.altitude_data
             self.set_init_altitude = True
             self.target_hight = self.target_hight_offset + self.init_altitude
             print("Altitude: ",self.altitude_data, "Target: ",self.target_hight,rospy.Time.now())
-        self.accel_callback()
+        self.alti_data_counter += 1
+        self.alti_total_data += self.altitude_data
+        if self.alti_data_counter == count_time:
+            self.alti_data_counter = 0
+            self.altitude_data = self.alti_total_data / count_time
+            self.accel_callback()
 
     def command_callback(self, msgs):
         self.command[0] = msgs.linear.x
