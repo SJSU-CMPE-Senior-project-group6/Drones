@@ -81,7 +81,7 @@ class Accel_Publisher(object):
         self.sum_error = 0.0
         self.curr_error_deriv = 0.0
         self.control = 0.0
-        self.dt = 0.05
+        self.dt = 0.02
 
         # locker for thread safe
         # self.lock = threading.Lock()
@@ -168,7 +168,7 @@ class Accel_Publisher(object):
                 yaw_error = self.target_yaw - self.channel[3]
                 pitch_error = self.target_pitch - self.channel[1]
                 #print("pitch:",self.target_pitch, "yaw:",self.target_yaw)
-                self.throttle_change_rate = self.pid_control(throttle_error, 20, 0, 1.05) ##use PD controller for slow moving Process variables
+                self.throttle_change_rate = self.pid_control(throttle_error, 10, 0, 1) ##use PD controller for slow moving Process variables
                 self.yaw_change_rate = self.pid_control(yaw_error, 1, 0.5, 0) #use PI controller for fast moving Process variables
                 self.pitch_change_rate = self.pid_control(pitch_error, 1, 0.5, 0) #use PI controller for fast moving Process variables
                 # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
