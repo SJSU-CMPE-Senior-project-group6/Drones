@@ -52,7 +52,7 @@ class Accel_Publisher(object):
                          #Min, Max, Default
         self.Roll =      [1000,2001,1500]
         self.Pitch =     [1400,1600,1500] #[1000,2001,1500]
-        self.Throttle =  [1019,2001,1030]
+        self.Throttle =  [1019,1600,1030] #[1019,2001,1030]
         self.Yaw =       [1300,1700,1500] #[1000,2001,1500]
 
         #Mode channel[4:5]
@@ -164,7 +164,7 @@ class Accel_Publisher(object):
     def accel_callback(self):
         if self.set_init_altitude == True:
             try:
-                throttle_error = (self.target_hight - self.altitude_data)*10
+                throttle_error = (self.target_hight - self.altitude_data)*100
                 yaw_error = self.target_yaw - self.channel[3]
                 pitch_error = self.target_pitch - self.channel[1]
                 #print("pitch:",self.target_pitch, "yaw:",self.target_yaw)
