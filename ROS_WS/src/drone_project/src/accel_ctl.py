@@ -81,7 +81,7 @@ class Accel_Publisher(object):
         self.sum_error = 0.0
         self.curr_error_deriv = 0.0
         self.control = 0.0
-        self.dt = 0.02
+        self.dt = 0.1
 
         # locker for thread safe
         # self.lock = threading.Lock()
