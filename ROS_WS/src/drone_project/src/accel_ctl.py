@@ -164,6 +164,31 @@ class Accel_Publisher(object):
     def accel_callback(self):
         if self.set_init_altitude == True:
             try:
+
+                if self.key is 'q' or self.key is 'e': #take off or land
+                    if self.key is 'q': #take off
+                        self.takeoff_command()
+                        print("Takeoff: ",self.channel)
+                        self.RC_data.channels = self.channel
+                        self.pub.publish(self.RC_data)
+                        time.sleep(3) #need at least 3 second
+                        self.pub.publish(self.RC_data)
+                        self.set_default_channel() #restore back default state
+                        self.launch_status = True
+
+                    else: #land
+                        self.land_command()
+                        print("Land: ",self.channel)
+                        self.RC_data.channels = self.channel
+                        self.pub.publish(self.RC_data)
+                        time.sleep(3) #need at least 3 second
+                        self.set_default_channel() #restore back default state
+                        self.launch_status = False
+                
+                elif self.key is 'z': #reset channel
+                    print("get: ",self.key)
+                    self.set_default_channel()
+                    
                 throttle_error = (self.target_hight - self.altitude_data)*100
                 yaw_error = self.target_yaw - self.channel[3]
                 pitch_error = self.target_pitch - self.channel[1]
@@ -189,31 +214,9 @@ class Accel_Publisher(object):
                 self.channel[2] += int(self.throttle_change_rate)
                 self.channel[3] += int(self.yaw_change_rate)
                 self.check_channel_boundary() #check range of the channel not be exceed
-                #print("get: ",self.key)
+                print("get: ",self.key)
         
-                if self.key is 'q' or self.key is 'e': #take off or land
-                    if self.key is 'q': #take off
-                        self.takeoff_command()
-                        print("Takeoff: ",self.channel)
-                        self.RC_data.channels = self.channel
-                        self.pub.publish(self.RC_data)
-                        time.sleep(3) #need at least 3 second
-                        self.pub.publish(self.RC_data)
-                        self.set_default_channel() #restore back default state
-                        self.launch_status = True
 
-                    else: #land
-                        self.land_command()
-                        print("Land: ",self.channel)
-                        self.RC_data.channels = self.channel
-                        self.pub.publish(self.RC_data)
-                        time.sleep(3) #need at least 3 second
-                        self.set_default_channel() #restore back default state
-                        self.launch_status = False
-                
-                elif self.key is 'z': #reset channel
-                    print("get: ",self.key)
-                    self.set_default_channel()
 
                 print(self.channel)
                 self.RC_data.channels = self.channel
