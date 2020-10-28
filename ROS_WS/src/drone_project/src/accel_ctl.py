@@ -164,7 +164,7 @@ class Accel_Publisher(object):
     def accel_callback(self):
         if self.set_init_altitude == True:
             try:
-                throttle_error = self.target_hight - self.altitude_data
+                throttle_error = (self.target_hight - self.altitude_data)*10
                 yaw_error = self.target_yaw - self.channel[3]
                 pitch_error = self.target_pitch - self.channel[1]
                 #print("pitch:",self.target_pitch, "yaw:",self.target_yaw)
