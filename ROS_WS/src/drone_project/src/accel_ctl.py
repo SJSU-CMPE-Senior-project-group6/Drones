@@ -189,12 +189,12 @@ class Accel_Publisher(object):
                     print("get: ",self.key)
                     self.set_default_channel()
 
-                throttle_error = (self.target_hight - self.altitude_data)*100
+                throttle_error = self.target_hight - self.altitude_data
                 yaw_error = self.target_yaw - self.channel[3]
                 pitch_error = self.target_pitch - self.channel[1]
                 #print("pitch:",self.target_pitch, "yaw:",self.target_yaw)
                 #self.throttle_change_rate = self.pid_control(throttle_error, 5, 0, 1) ##use PD controller for slow moving Process variables
-                self.throttle_change_rate = self.pid_control(throttle_error, 5, 0.01, 0) ##use PD controller for slow moving Process variables
+                self.throttle_change_rate = self.pid_control(throttle_error, 10, 0.01, 0) ##use PD controller for slow moving Process variables
                 self.yaw_change_rate = self.pid_control(yaw_error, 0.6, 0.5, 0) #use PI controller for fast moving Process variables
                 self.pitch_change_rate = self.pid_control(pitch_error, 0.6, 0.5, 0) #use PI controller for fast moving Process variables
                 # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
