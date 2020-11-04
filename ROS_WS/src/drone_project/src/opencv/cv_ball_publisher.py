@@ -1,5 +1,3 @@
-from picamera.array import PiRGBArray
-from picamera import PiCamera
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 import rospy
@@ -11,33 +9,24 @@ import math
 class ball_recognition:
 	def __init__(self):
 		#ROS
+		self.cap = cv2.VideoCapture(0)
 		rospy.init_node('opencv_publisher')
 		self.pub = rospy.Publisher('/cv_info',Twist,queue_size=2)
 		self.frame_w = 640
 		self.frame_h = 480
-		self.angle_per_pixel = 90.0/self.frame_w
-		self.ball_diameter = 13.0
+		self.angle_per_pixel = 78.0/self.frame_w
+		self.ball_diameter = 14.7
 		self.twist = Twist()
 		print("ball_command publisher starts")
 
 	def camera_publisher(self):
 		# initialize the camera and grab a reference to the raw camera capture
-		camera = PiCamera()
-		camera.resolution = (640, 480)
-		camera.framerate = 32
-		rawCapture = PiRGBArray(camera, size=(640, 480))
-		# allow the camera to warmup
-		time.sleep(0.1)
-		# capture frames from the camera
-		for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-			# grab the raw NumPy array representing the image, then initialize the timestamp
-			# and occupied/unoccupied text
-
-			image = frame.array	
+		cols = 640
+		rows = 480   
+		while(True):
+			ret, image = self.cap.read()
 			ksize = (6,6)
-			image = cv2.blur(image,ksize)
-			cols = len(image[0])
-			rows = len(image)	
+			image = cv2.blur(image,ksize)	
 			x_medium = int(cols/2)
 			center = int(cols/2)
 	
@@ -83,13 +72,7 @@ class ball_recognition:
 			# show the frame
 			cv2.imshow("Frame", image)
 			#cv2.imshow("mask", red_mask)
-			key = cv2.waitKey(1) & 0xFF
-			# clear the stream in preparation for the next frame
-			rawCapture.truncate(0)
-
-
-			# if the `q` key was pressed, break from the loop
-			if key == ord("q"):
+			if cv2.waitKey(1) & 0xFF == ord('q'):
 				break
 
 if __name__ == "__main__":

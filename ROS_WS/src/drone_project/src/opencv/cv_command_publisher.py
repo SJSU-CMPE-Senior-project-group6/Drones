@@ -11,7 +11,7 @@ class image_info:
 		self.command_pub = rospy.Publisher("/cv_command", Twist, queue_size=2)
 		self.center_horizontal_deg = [-5,5]
 		self.center_vertical_deg = [-5,5]
-		self.ball_distance_cm = [150,200]
+		self.ball_distance_cm = [125,175]
 		self.ball_center_ptr = self.ball_distance_cm[0] + (self.ball_distance_cm[1] - self.ball_distance_cm[0])/2
 		self.twist = Twist()
 		rospy.spin()
@@ -45,6 +45,7 @@ class image_info:
 			z = z - self.ball_center_ptr
 		else:
 			z = 0
+    
 
 		print(x,y,z)
 		self.twist.linear.x = x
