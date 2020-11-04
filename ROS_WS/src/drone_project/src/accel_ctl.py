@@ -260,19 +260,19 @@ class Accel_Publisher(object):
         # print(self.command)
         #for yaw
         if self.command[0] < 0:
-            self.target_yaw = self.Yaw[0] #1300
+            self.target_yaw = self.Yaw[0] #1300 turn left
         elif self.command[0] == 0:
             self.target_yaw = self.Yaw[2] #1500
         else:
-            self.target_yaw = self.Yaw[1] #1700
+            self.target_yaw = self.Yaw[1] #1700 turn right
         
         #for pitch
         if self.command[2] < 0:
-            self.target_pitch = self.Pitch[1] #1600
+            self.target_pitch = self.Pitch[1] #1600 backward
         elif self.command[2] == 0:
             self.target_pitch = self.Pitch[2] #1500
         else:
-            self.target_pitch = self.Pitch[0] #1400
+            self.target_pitch = self.Pitch[0] #1400 forward
 
         #                  #Min, Max, Default
         # self.Roll =      [1000,2001,1500]
