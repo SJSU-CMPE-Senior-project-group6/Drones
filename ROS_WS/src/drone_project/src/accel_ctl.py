@@ -52,7 +52,7 @@ class Accel_Publisher(object):
                          #Min, Max, Default
         self.Roll =      [1000,2001,1500]
         self.Pitch =     [1400,1600,1500] #[1000,2001,1500]
-        self.Throttle =  [1019,1700,1030] #[1019,2001,1030]
+        self.Throttle =  [1030,1550,1030] #[1019,2001,1030]
         self.Yaw =       [1300,1700,1500] #[1000,2001,1500]
 
         #Mode channel[4:5]
@@ -194,12 +194,11 @@ class Accel_Publisher(object):
                 pitch_error = self.target_pitch - self.channel[1]
                 #print("pitch:",self.target_pitch, "yaw:",self.target_yaw)
                 self.throttle_change_rate = self.pid_control(throttle_error, 10, 0, 1) ##use PD controller for slow moving Process variables
-                # self.throttle_change_rate = self.pid_control(throttle_error, 10, 0.01, 0) ##use PD controller for slow moving Process variables
                 self.yaw_change_rate = self.pid_control(yaw_error, 0.6, 0.5, 0) #use PI controller for fast moving Process variables
                 self.pitch_change_rate = self.pid_control(pitch_error, 0.6, 0.5, 0) #use PI controller for fast moving Process variables
                 # self.roll_change_rate = self.pid_control(current_error, 4, 0.001, 5)
 
-                print("throttle rate: ",round(self.throttle_change_rate,2), "error: ",round(throttle_error,2))
+                #print("throttle rate: ",round(self.throttle_change_rate,2), "error: ",round(throttle_error,2))
                 #print("yaw rate: ",round(self.yaw_change_rate,2), "error: ",round(yaw_error,2))
                 #print("pitch rate: ",round(self.pitch_change_rate,2), "error: ",round(pitch_error,2))
 
@@ -274,11 +273,6 @@ class Accel_Publisher(object):
         else:
             self.target_pitch = self.Pitch[0] #1400 forward
 
-        #                  #Min, Max, Default
-        # self.Roll =      [1000,2001,1500]
-        # self.Pitch =     [1400,1600,1500] #[1000,2001,1500]
-        # self.Throttle =  [1019,2001,1030]
-        # self.Yaw =       [1300,1700,1500] #[1000,2001,1500]
 if __name__=="__main__":  
     flight_rc_ctl = Accel_Publisher()
 
