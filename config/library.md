@@ -5,7 +5,7 @@ __firefox add-on__
 >[follow](https://github.com/KeithLRobertson/markdown-viewer#support-for-local-files-on-linux)
 
 # ros
-[__install__](http://wiki.ros.org/kinetic/Installation/Ubuntu)
+>[__install__](http://wiki.ros.org/kinetic/Installation/Ubuntu)
 
 ## python
 __cv2__  
@@ -19,5 +19,5 @@ __cv2__
 >`sudo pip install picamera`  
 >[download haarcascade_frontalface_default.xml](https://github.com/opencv/opencv/tree/master/data/haarcascades)  
 
-#Jetson nano
-> Wifi driver setup for Intel AX200: [references URL](https://wifi.hypergeek.net/you-too-can-have-a-sub-200-11ax-client/)
+# ~~Jetson nano~~ (not use)
+> ~~Wifi driver setup for Intel AX200: [references URL](https://wifi.hypergeek.net/you-too-can-have-a-sub-200-11ax-client/)~~
