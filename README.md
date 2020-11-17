@@ -1,14 +1,17 @@
 # Drones
 
 ## Branch
-### Remote
-master branch on PC with ubuntu 16  
+### master
+Branch for Remote (PC with ubuntu 16) and Raspberry Pi(1) (on drone)  
 
-### Raspberry Pi
-Navio2 branch on Raspberry Pi  
+### Navio2
+Branch for Raspberry Pi(2) and Navio2  
+
+### camera
+Branch for computer vision (openCV) feature
 
 ## Folder
-### Remote
+### master
 >__3D print__  
 >__config__  
 >__develop__  
