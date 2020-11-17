@@ -3,3 +3,4 @@ ROS_WS/build/
 ROS_WS/devel/
 #
 .vscode/
+.DS_Store
